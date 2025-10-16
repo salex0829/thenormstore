@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Future Line | Product Selector (2D + Animated BG)</title>
+  <title>Future Line | Product Selector</title>
   <style>
     :root{
+      /* ← 比率を変えるときはここだけ： 1/1, 4/3, 3/2, 16/9 など */
+      --thumb-ratio: 4/3;
+
       --bg1:#eaf6ff; --bg2:#cfefff; --bg3:#bfe7ff;
       --glass:#ffffffcc; --stroke:#e1f0f8; --ink:#0d1b2a; --muted:#4f6b83;
       --primary:#00a3ff; --accent:#4ce078; --danger:#ff5a7a;
@@ -19,12 +22,12 @@
         radial-gradient(1200px 700px at 80% -10%, #ffffff 0%, transparent 60%),
         radial-gradient(1800px 900px at -10% 10%, var(--bg1) 0%, transparent 55%),
         linear-gradient(180deg, var(--bg2), var(--bg3));
-      background-size: auto, auto, 100% 100%;
       animation: skyShift 18s ease-in-out infinite;
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
     @keyframes skyShift { 0%{background-position:0 0,0 0,0 0} 50%{background-position:0 -7%,-5% 4%,0 0} 100%{background-position:0 0,0 0,0 0} }
+
     .bubbles{position:fixed; inset:0; pointer-events:none; z-index:1}
     .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#fff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
     .b1{width:180px; height:180px; left:6%; top:14%; filter:blur(2px); opacity:.55}
@@ -58,16 +61,36 @@
     .hint{color:var(--muted); margin:-2px 0 12px}
 
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px}
-    .card{border:1px solid var(--stroke); background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
-      border-radius:20px; overflow:hidden; cursor:pointer; transition:.2s transform,.2s box-shadow}
+    .card{
+      display:flex; flex-direction:column;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
+      border-radius:20px; overflow:hidden; cursor:pointer; transition:.2s transform,.2s box-shadow;
+      min-height: 240px; /* 画像が同比率で揃うのでボディ高さも安定 */
+    }
     .card:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
-    .thumb{height:140px; display:grid; place-items:center; background:linear-gradient(135deg,#f2fbff,#e5f7ff)}
-    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
-    .thumb .ph{width:100%; height:100%; display:grid; place-items:center;
-      background:radial-gradient(60% 80% at 50% 30%, rgba(0,163,255,.18), transparent 60%), linear-gradient(135deg,#f2fbff,#e5f7ff);
-      color:#0a4a6a; font-size:36px; font-weight:700;}
-    .body{padding:12px 14px}
-    .name{font-weight:800; font-size:15px}
+
+    /* ★ ここが重要：均一なトリミング表示 ★ */
+    .thumb{
+      position:relative;
+      width:100%;
+      aspect-ratio: var(--thumb-ratio);
+      background:linear-gradient(135deg,#f2fbff,#e5f7ff);
+      overflow:hidden;
+    }
+    .thumb img{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;          /* 中央を基準にキレイにトリミング */
+      object-position:center;    /* フォーカスを中央に */
+      display:block;
+      -webkit-user-drag:none; user-select:none;
+      image-rendering:auto;
+    }
+    .thumb .ph{display:none} /* プレースホルダは通常非表示 */
+
+    .body{padding:12px 14px; display:flex; flex-direction:column; gap:6px}
+    .name{font-weight:800; font-size:15px; line-height:1.3}
     .meta{display:flex; gap:8px; align-items:center; color:#3f6b85; font-size:12px}
     .chip{border:1px solid var(--stroke); padding:4px 10px; border-radius:999px; background:linear-gradient(180deg,#fff,#f5fbff)}
 
@@ -135,33 +158,26 @@
     const db = firebase.firestore();
     const votesRef = db.collection('votes');
 
-    // ===== 画像差し替え版カタログ =====
-    // file: サムネのファイル名（img/thumb/以下）
-    // モーダルは同名の img/large/<同名>.png があれば自動使用、なければサムネを表示
+    // ===== カタログ =====
     const PRODUCTS = [
       { id:'p1',                name:'都市スナップ p1',  cat:'ART',       file:'p1.png' },
-
       { id:'fashion2',         name:'ファッション 02',   cat:'FASHION',  file:'fashion_2.png' },
       { id:'imkp_fashion2',    name:'ファッション 02 (imkp)', cat:'FASHION',  file:'imkp_Fashion_2.png' },
       { id:'imkp_fashion6',    name:'ファッション 06 (imkp)', cat:'FASHION',  file:'imkp_Fashion_6.png' },
-
       { id:'food1',            name:'フード 01',         cat:'FOOD',     file:'food_1.png' },
       { id:'food2',            name:'フード 02',         cat:'FOOD',     file:'food_2.png' },
       { id:'imkp_food2',       name:'フード 02 (imkp)',  cat:'FOOD',     file:'imkp_Food_2.png' },
       { id:'imkp_food3',       name:'フード 03 (imkp)',  cat:'FOOD',     file:'imkp_Food_3.png' },
-
       { id:'edu1',             name:'エデュケーション 01', cat:'EDUCATION', file:'edu_1.png' },
       { id:'edu2',             name:'エデュケーション 02', cat:'EDUCATION', file:'edu_2.png' },
       { id:'imkp_edu1',        name:'エデュケーション 01 (imkp)', cat:'EDUCATION', file:'imkp_Education_1.png' },
       { id:'imkp_edu3',        name:'エデュケーション 03 (imkp)', cat:'EDUCATION', file:'imkp_Education_3.png' },
-
       { id:'house',            name:'ハウス',            cat:'HOME',     file:'house.png' },
       { id:'house1',           name:'ハウス 01',         cat:'HOME',     file:'house_1.png' },
     ];
 
     function stem(filename){ return (filename||'').replace(/\.[^.]+$/, ''); }
 
-    // ===== プレースホルダSVG =====
     function placeholderSVG(text){
       const label = (text || '').slice(0,8);
       const svg = `
@@ -176,7 +192,6 @@
       return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }
 
-    // ===== 商品グリッド =====
     const $grid = document.getElementById('grid');
     function renderGrid(){
       $grid.innerHTML = PRODUCTS.map(p=>{
@@ -184,7 +199,7 @@
         return `
           <article class="card" data-id="${p.id}">
             <div class="thumb">
-              <img data-id="${p.id}" data-name="${p.name}" src="${thumb}" alt="${p.name}" loading="lazy">
+              <img data-id="${p.id}" data-name="${p.name}" src="${thumb}" alt="${p.name}" loading="lazy" decoding="async">
             </div>
             <div class="body">
               <div class="name">${p.name}</div>
@@ -193,7 +208,6 @@
           </article>`;
       }).join('');
 
-      // クリックでモーダルを開く
       $grid.querySelectorAll('.card').forEach(el=>{
         el.addEventListener('click', ()=>{
           const id = el.getAttribute('data-id');
@@ -201,7 +215,7 @@
         });
       });
 
-      // 画像読み込み失敗→プレースホルダへ
+      // ロード失敗時のフォールバック
       $grid.querySelectorAll('img[data-id]').forEach(img=>{
         img.onerror = ()=>{
           const name = img.getAttribute('data-name') || '';
@@ -210,7 +224,7 @@
       });
     }
 
-    // ===== モーダル（2D画像） =====
+    // ===== モーダル =====
     const $modal = document.getElementById('modal');
     const $modalTitle = document.getElementById('modalTitle');
     const $modalProduct = document.getElementById('modalProduct');
@@ -225,7 +239,6 @@
 
       const thumbSrc = p.file ? `img/thumb/${p.file}` : placeholderSVG(p.name);
       const largeSrc = `img/large/${stem(p.file||'')}.png`;
-      // large が無ければ thumb にフォールバック
       $viewerImg.onerror = ()=>{ $viewerImg.onerror=null; $viewerImg.src = thumbSrc; };
       $viewerImg.src = largeSrc;
       $viewerImg.alt = p.name;
@@ -233,10 +246,10 @@
       $modal.classList.add('active');
     }
     function closeModal(){ $modal.classList.remove('active'); window.__current=null; }
+
     document.getElementById('btn-close').addEventListener('click', closeModal);
     $modal.addEventListener('click', e=>{ if(e.target === $modal) closeModal(); });
 
-    // ===== 送信 =====
     document.getElementById('answer-yes').addEventListener('click', ()=> handle('yes'));
     document.getElementById('answer-no').addEventListener('click', ()=> handle('no'));
     async function handle(answer){
@@ -248,7 +261,6 @@
       closeModal();
     }
 
-    // ===== 全消去（展示後用） =====
     document.getElementById('btn-reset').addEventListener('click', async ()=>{
       if(!confirm('votes を全削除します。よろしいですか？')) return;
       const snap = await votesRef.get(); const batch = db.batch();
@@ -262,7 +274,7 @@
       setTimeout(()=>t.classList.remove('show'),1200);
     }
 
-    // ===== Background Sparkle（最背面の微粒子） =====
+    // 背景の微粒子
     (function sparkle(){
       const c = document.getElementById('bgSparkle');
       if(!c) return;
@@ -322,5 +334,8 @@
     // 起動
     renderGrid();
   </script>
+
+  <div id="toast" class="toast">送信しました</div>
+  <div class="modal" id="modal"></div>
 </body>
 </html>
