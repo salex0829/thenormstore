@@ -5,78 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Future Line | Visualization Console (Aero)</title>
   <style>
-    :root{
-      --bg1:#eaf6ff; --bg2:#cfefff; --bg3:#bfe7ff;
-      --glass:#ffffffcc; --stroke:#e1f0f8;
-      --ink:#0d1b2a; --muted:#4f6b83;
-      --ok:#35c987; --no:#ff5a7a; --future:#00a3ff;
-      --shadow: 0 10px 30px rgba(13,27,42,.12), 0 2px 8px rgba(13,27,42,.06);
-      --hdrH: 64px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; color:var(--ink);
-      background:
-        radial-gradient(1200px 700px at 80% -10%, #ffffff 0%, transparent 60%),
-        radial-gradient(1800px 900px at -10% 10%, var(--bg1) 0%, transparent 55%),
-        linear-gradient(180deg, var(--bg2), var(--bg3));
-      background-size:auto,auto,100% 100%;
-      animation: skyShift 18s ease-in-out infinite;
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-      overflow-x:hidden;
-    }
-    @keyframes skyShift {0%{background-position:0 0,0 0,0 0}50%{background-position:0 -3%,-2% 2%,0 0}100%{background-position:0 0,0 0,0 0}}
-    .bubbles{position:fixed; inset:0; pointer-events:none; z-index:1}
-    .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#fff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
+    :root{--bg1:#eaf6ff;--bg2:#cfefff;--bg3:#bfe7ff;--glass:#ffffffcc;--stroke:#e1f0f8;--ink:#0d1b2a;--muted:#4f6b83;--ok:#35c987;--no:#ff5a7a;--future:#00a3ff;--shadow:0 10px 30px rgba(13,27,42,.12),0 2px 8px rgba(13,27,42,.06);--hdrH:64px}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;color:var(--ink);background:radial-gradient(1200px 700px at 80% -10%,#fff 0%,transparent 60%),radial-gradient(1800px 900px at -10% 10%,var(--bg1) 0%,transparent 55%),linear-gradient(180deg,var(--bg2),var(--bg3));background-size:auto,auto,100% 100%;animation:skyShift 18s ease-in-out infinite;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+    @keyframes skyShift{0%{background-position:0 0,0 0,0 0}50%{background-position:0 -3%,-2% 2%,0 0}100%{background-position:0 0,0 0,0 0}}
+    .bubbles{position:fixed;inset:0;pointer-events:none;z-index:1}
+    .bubbles i{position:absolute;border-radius:999px;background:linear-gradient(180deg,#fff,rgba(255,255,255,.6));box-shadow:0 10px 30px rgba(0,163,255,.18)}
     .b1{width:180px;height:180px;left:6%;top:14%;filter:blur(2px);opacity:.55}
     .b2{width:260px;height:260px;right:8%;top:8%;opacity:.45}
     .b3{width:120px;height:120px;left:18%;bottom:10%;opacity:.5}
     @keyframes float1{0%{transform:translateY(0) rotate(0);opacity:.45}50%{transform:translateY(-18px) rotate(6deg);opacity:.65}100%{transform:translateY(0) rotate(0);opacity:.45}}
     @keyframes float2{0%{transform:translate(0,0) rotate(0);opacity:.55}50%{transform:translate(8px,-26px) rotate(-5deg);opacity:.75}100%{transform:translate(0,0) rotate(0);opacity:.55}}
-    .bubbles i{animation:float1 10s ease-in-out infinite}
-    .bubbles .b2{animation:float2 14s ease-in-out infinite}
-    .bubbles .b3{animation:float1 12s ease-in-out -2s infinite}
-
-    header{position:sticky; top:0; z-index:3; backdrop-filter:saturate(1.4) blur(8px);
-      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35));
-      border-bottom:1px solid var(--stroke);}
-    .hdr{display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; padding:14px 16px}
-    .brand{display:flex; align-items:center; gap:10px}
-    .mark{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,#00d1ff,#00a3ff);box-shadow:var(--shadow)}
-    .toolbar{display:flex; gap:8px}
-    .btn{border:1px solid var(--stroke);background:linear-gradient(180deg,#fff,#f6fbff);color:var(--ink);
-      padding:9px 12px;border-radius:999px;box-shadow:var(--shadow);cursor:pointer}
+    .bubbles i{animation:float1 10s ease-in-out infinite}.bubbles .b2{animation:float2 14s ease-in-out infinite}.bubbles .b3{animation:float1 12s ease-in-out -2s infinite}
+    header{position:sticky;top:0;z-index:3;backdrop-filter:saturate(1.4) blur(8px);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35));border-bottom:1px solid var(--stroke)}
+    .hdr{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px 16px}
+    .brand{display:flex;align-items:center;gap:10px}.mark{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,#00d1ff,#00a3ff);box-shadow:var(--shadow)}
+    .toolbar{display:flex;gap:8px}.btn{border:1px solid var(--stroke);background:linear-gradient(180deg,#fff,#f6fbff);color:var(--ink);padding:9px 12px;border-radius:999px;box-shadow:var(--shadow);cursor:pointer}
     .btn:hover{transform:translateY(-1px)}
-
-    main{
-      padding:14px;
-      display:grid; grid-template-columns:1.25fr 1fr; gap:14px; position:relative; z-index:2;
-      height: calc(100vh - var(--hdrH)); min-height:480px;
-    }
-    @media (max-width:1200px){
-      main{grid-template-columns:1fr; height:auto; min-height:calc(100vh - var(--hdrH));}
-    }
-
-    .panel{position:relative; background:var(--glass); border:1px solid var(--stroke);
-      border-radius:24px; padding:14px; box-shadow:var(--shadow); min-height:0;}
-    .panel h2{margin:0 0 8px; font-size:14px; letter-spacing:.08em; color:#194057}
-    .chart-box{position:relative; border:1px solid var(--stroke); border-radius:16px; padding:12px;
-      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7))}
-    .bin{position:absolute; right:16px; top:16px; padding:6px 10px; border:1px solid var(--stroke);
-      border-radius:999px; background:linear-gradient(180deg,#ffffff,#eef8ff); color:#0d4d7a; box-shadow:var(--shadow)}
-    .legend{display:flex; gap:10px; color:var(--muted); font-size:12px; margin:6px 0}
-    .legend .dot{width:10px;height:10px;border-radius:50%}
-    .legend .yes{background:var(--ok)} .legend .no{background:var(--no)}
-
-    .stat{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px}
-    .box{border:1px solid var(--stroke); border-radius:16px; padding:10px; background:linear-gradient(180deg,#fff,#f6fbff); box-shadow:var(--shadow)}
-    .label{font-size:12px; color:var(--muted)} .value{font-size:22px; font-weight:800}
-    svg,canvas{display:block; width:100%}
-
-    #flowPanel{display:flex; flex-direction:column; min-height:0}
-    #flowChartBox{flex:1; min-height:260px}
+    main{padding:14px;display:grid;grid-template-columns:1.25fr 1fr;gap:14px;position:relative;z-index:2;height:calc(100vh - var(--hdrH));min-height:480px}
+    @media (max-width:1200px){main{grid-template-columns:1fr;height:auto;min-height:calc(100vh - var(--hdrH))}}
+    .panel{position:relative;background:var(--glass);border:1px solid var(--stroke);border-radius:24px;padding:14px;box-shadow:var(--shadow);min-height:0}
+    .panel h2{margin:0 0 8px;font-size:14px;letter-spacing:.08em;color:#194057}
+    .chart-box{position:relative;border:1px solid var(--stroke);border-radius:16px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7))}
+    .bin{position:absolute;right:16px;top:16px;padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;background:linear-gradient(180deg,#fff,#eef8ff);color:#0d4d7a;box-shadow:var(--shadow)}
+    .legend{display:flex;gap:10px;color:var(--muted);font-size:12px;margin:6px 0}.legend .dot{width:10px;height:10px;border-radius:50%}.legend .yes{background:var(--ok)}.legend .no{background:var(--no)}
+    .stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+    .box{border:1px solid var(--stroke);border-radius:16px;padding:10px;background:linear-gradient(180deg,#fff,#f6fbff);box-shadow:var(--shadow)}
+    .label{font-size:12px;color:var(--muted)}.value{font-size:22px;font-weight:800}
+    svg,canvas{display:block;width:100%} #flowPanel{display:flex;flex-direction:column;min-height:0} #flowChartBox{flex:1;min-height:260px}
+    /* debug badge */
+    .badge{position:fixed;right:10px;top:10px;z-index:5;font:12px/1.2 system-ui;padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;background:linear-gradient(180deg,#fff,#f6fbff);color:#194057;box-shadow:var(--shadow);opacity:.9}
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
@@ -114,23 +72,40 @@
 
     <section class="panel">
       <h2>SANKEY / PRODUCT → YES / NO → FUTURE</h2>
-      <div class="chart-box" style="height:360px"><svg id="sankey" width="100%" height="360"></svg></div>
+      <div class="chart-box" style="height:360px; position:relative">
+        <svg id="sankey" width="100%" height="360" role="img" aria-label="Sankey Diagram"></svg>
+      </div>
       <h2 style="margin:10px 0 8px">TIMELINE / PER MINUTE</h2>
-      <div class="chart-box" style="height:220px"><svg id="timeline" width="100%" height="220"></svg></div>
+      <div class="chart-box" style="height:220px; position:relative">
+        <svg id="timeline" width="100%" height="220" role="img" aria-label="Timeline"></svg>
+      </div>
     </section>
   </main>
 
+  <div id="badge" class="badge" style="display:none"></div>
+
   <script>
-    // ===== Firebase =====
+    /* ===== Firebase ===== */
     const firebaseConfig = { apiKey:"AIzaSyCDdz7o8PoUdr28-8TZhEk33SP14aWuIzs", authDomain:"thenorm-5caf7.firebaseapp.com", projectId:"thenorm-5caf7" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const votesRef = db.collection('votes');
 
-    // ★★★ select.html と同じ値にすること ★★★
-    const SESSION_ID = "20251016_shibuya_a";
+    /* ===== セッションID：URL > 既定 =====
+       例）viz.html?session=demoA で上書き可能
+    */
+    const DEFAULT_SESSION_ID = "20251016_shibuya_a";
+    const urlSession = new URL(location.href).searchParams.get('session');
+    const SESSION_ID = (urlSession && urlSession.trim()) || DEFAULT_SESSION_ID;
+    const showDebugBadge = true; // false にすると右上バッジ非表示
 
-    // 可視化で使う製品ラベル（select.html と同じ配列）
+    if (showDebugBadge) {
+      const b = document.getElementById('badge');
+      b.textContent = `session=${SESSION_ID}`;
+      b.style.display = 'block';
+    }
+
+    /* ===== 製品名（可視化に使う）===== */
     const PRODUCTS = [
       { id:'p1', name:'都市スナップ p1' },
       { id:'fashion2', name:'ファッション 02' },
@@ -149,7 +124,7 @@
     ];
     const PRODUCT_NAME = new Map(PRODUCTS.map(p=>[p.id,p.name]));
 
-    /* ========= 背景スパークル ========= */
+    /* ===== 背景スパークル（省略：同じ） ===== */
     (function sparkle(){
       const c=document.getElementById('bgSparkle'); if(!c) return;
       const ctx=c.getContext('2d',{alpha:true}); let w,h,dpr=Math.min(2,window.devicePixelRatio||1);
@@ -166,84 +141,42 @@
         requestAnimationFrame(tick); })();
     })();
 
-    /* ========= FLOW：Yes粒子 + アンビエント ========= */
-    const pCanvas = document.getElementById('particles');
-    const pCtx = pCanvas.getContext('2d');
-    const PARAM = {
-      IDLE_SPAWN_PER_SEC: 6, IDLE_BASE_SPEED: 1.2, IDLE_MAX: 220,
-      DRIZZLE_EVERY_SEC: 8, DRIZZLE_COUNT: 8, FUTURE_PULSE_STRENGTH: .12,
-      YES_BASE_R: 3.0, YES_BURST_R_MIN: 5.0, YES_BURST_R_MAX: 7.5,
-      YES_FLASH_MS: 450, TRAIL_LENGTH: 12, TRAIL_FADE: 0.08
-    };
-    let particles=[], idleParticles=[], lastIdleSpawn=0, lastDrizzle=0;
+    /* ===== 粒子（省略：同じ） ===== */
+    const pCanvas=document.getElementById('particles'); const pCtx=pCanvas.getContext('2d');
+    const PARAM={IDLE_SPAWN_PER_SEC:6,IDLE_BASE_SPEED:1.2,IDLE_MAX:220,DRIZZLE_EVERY_SEC:8,DRIZZLE_COUNT:8,FUTURE_PULSE_STRENGTH:.12,YES_BASE_R:3,YES_BURST_R_MIN:5,YES_BURST_R_MAX:7.5,YES_FLASH_MS:450,TRAIL_LENGTH:12,TRAIL_FADE:.08};
+    let particles=[],idleParticles=[],lastIdleSpawn=0,lastDrizzle=0;
+    function spawnYesParticles(n){const h=pCanvas.height;for(let i=0;i<n;i++)particles.push({x:-20,y:40+Math.random()*(h-80),vx:2+Math.random()*3,vy:(Math.random()-.5)*1,life:220+Math.random()*100,r:PARAM.YES_BASE_R,col:'rgba(53,201,135,0.95)',burst:false,born:performance.now(),trail:[]})}
+    function spawnYesBurst(k){const h=pCanvas.height;for(let i=0;i<k;i++)particles.push({x:-30,y:40+Math.random()*(h-80),vx:2.4+Math.random()*3.2,vy:(Math.random()-.5)*1.2,life:260+Math.random()*120,r:PARAM.YES_BURST_R_MIN+Math.random()*(PARAM.YES_BURST_R_MAX-PARAM.YES_BURST_R_MIN),col:'rgba(255,255,255,1)',burst:true,born:performance.now(),trail:[]})}
+    function spawnIdle(k){const h=pCanvas.height;for(let i=0;i<k;i++)idleParticles.push({x:Math.random()*pCanvas.width*0.6,y:20+Math.random()*(h-40),vx:PARAM.IDLE_BASE_SPEED*(0.6+Math.random()*0.8),vy:(Math.random()-.5)*0.4,r:1.4+Math.random()*1.2,life:800+Math.random()*400});if(idleParticles.length>PARAM.IDLE_MAX)idleParticles.splice(0,idleParticles.length-PARAM.IDLE_MAX)}
+    function drawFlowGrid(w,h){pCtx.strokeStyle='rgba(13,27,42,0.06)';for(let y=0;y<=h;y+=40){pCtx.beginPath();pCtx.moveTo(0,y+.5);pCtx.lineTo(w,y+.5);pCtx.stroke();}}
+    function drawFutureBin(w,h,now){const fx=w-120,fy=40,fw=100,fh=h-80;const pulse=(Math.sin(now/900)+1)/2*PARAM.FUTURE_PULSE_STRENGTH;pCtx.fillStyle=`rgba(0,163,255,${0.06+pulse})`;pCtx.fillRect(fx,fy,fw,fh);const grad=pCtx.createLinearGradient(fx,0,fx+fw,0);grad.addColorStop(0,'rgba(255,255,255,0)');grad.addColorStop(0.5,`rgba(255,255,255,${0.10+pulse})`);grad.addColorStop(1,'rgba(255,255,255,0)');pCtx.fillStyle=grad;pCtx.fillRect(fx,fy,fw,fh);return{fx,fy,fw,fh}}
+    function flowNoise(w,h,now){pCtx.save();pCtx.globalAlpha=.08;pCtx.lineWidth=1;pCtx.strokeStyle='rgba(25,64,87,0.35)';for(let i=0;i<8;i++){const y=(now/40+i*22)%(h-60)+30;pCtx.beginPath();pCtx.moveTo(10,y);pCtx.quadraticCurveTo(w*0.35,y+Math.sin((now+i*300)/700)*8,w-140,y+Math.cos((now+i*150)/900)*10);pCtx.stroke();}pCtx.restore()}
+    function tick(){const w=pCanvas.width,h=pCanvas.height,now=performance.now();pCtx.clearRect(0,0,w,h);drawFlowGrid(w,h);const bin=drawFutureBin(w,h,now);flowNoise(w,h,now);if(now-lastIdleSpawn>1000){spawnIdle(PARAM.IDLE_SPAWN_PER_SEC);lastIdleSpawn=now}if(now-lastDrizzle>PARAM.DRIZZLE_EVERY_SEC*1000){spawnYesParticles(PARAM.DRIZZLE_COUNT);lastDrizzle=now}for(let i=idleParticles.length-1;i>=0;i--){const p=idleParticles[i],ax=(bin.fx-p.x)/50000,ay=((bin.fy+bin.fh/2)-p.y)/80000;p.vx+=ax;p.vy+=ay;p.x+=p.vx;p.y+=p.vy;p.life--;pCtx.fillStyle='rgba(0,163,255,0.55)';pCtx.beginPath();pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);pCtx.fill();if(p.x>bin.fx+bin.fw||p.y<0||p.y>h||p.life<=0)idleParticles.splice(i,1)}for(let i=particles.length-1;i>=0;i--){const pt=particles[i],ax=(bin.fx-pt.x)/900,ay=((bin.fy+bin.fh/2)-pt.y)/1200;pt.vx+=ax;pt.vy+=ay;pt.x+=pt.vx;pt.y+=pt.vy;pt.life--;pt.trail.unshift({x:pt.x,y:pt.y});if(pt.trail.length>PARAM.TRAIL_LENGTH)pt.trail.pop();pCtx.save();pCtx.globalCompositeOperation='lighter';for(let t=0;t<pt.trail.length;t++){const f=(1-t/pt.trail.length)*(pt.burst?0.9:0.6);pCtx.fillStyle=`rgba(53,201,135,${f*PARAM.TRAIL_FADE*(pt.burst?2:1)})`;const tr=Math.max(.8,pt.r*(0.9-t/pt.trail.length*0.6));pCtx.beginPath();pCtx.arc(pt.trail[t].x,pt.trail[t].y,tr,0,Math.PI*2);pCtx.fill()}pCtx.restore();const age=performance.now()-pt.born;if(age<PARAM.YES_FLASH_MS){const k=1-age/PARAM.YES_FLASH_MS;pCtx.save();pCtx.globalAlpha=.25*k*(pt.burst?1.3:1);pCtx.beginPath();pCtx.arc(pt.x,pt.y,pt.r*(2.4-1.2*k),0,Math.PI*2);pCtx.fillStyle='rgba(255,255,255,1)';pCtx.fill();pCtx.restore()}pCtx.fillStyle=pt.burst?'rgba(255,255,255,0.95)':pt.col;pCtx.beginPath();pCtx.arc(pt.x,pt.y,pt.r,0,Math.PI*2);pCtx.fill();if(pt.x>bin.fx+bin.fw||pt.life<=0)particles.splice(i,1)}requestAnimationFrame(tick)}    
 
-    function spawnYesParticles(n){
-      const h=pCanvas.height;
-      for(let i=0;i<n;i++) particles.push({x:-20,y:40+Math.random()*(h-80),vx:2.0+Math.random()*3.0,vy:(Math.random()-.5)*1.0,life:220+Math.random()*100,r:PARAM.YES_BASE_R,col:'rgba(53,201,135,0.95)',burst:false,born:performance.now(),trail:[]});
-    }
-    function spawnYesBurst(k){
-      const h=pCanvas.height;
-      for(let i=0;i<k;i++) particles.push({x:-30,y:40+Math.random()*(h-80),vx:2.4+Math.random()*3.2,vy:(Math.random()-.5)*1.2,life:260+Math.random()*120,r:PARAM.YES_BURST_R_MIN+Math.random()*(PARAM.YES_BURST_R_MAX-PARAM.YES_BURST_R_MIN),col:'rgba(255,255,255,1)',burst:true,born:performance.now(),trail:[]});
-    }
-    function spawnIdle(k){
-      const h=pCanvas.height;
-      for(let i=0;i<k;i++) idleParticles.push({x:Math.random()*pCanvas.width*0.6,y:20+Math.random()*(h-40),vx:PARAM.IDLE_BASE_SPEED*(0.6+Math.random()*0.8),vy:(Math.random()-.5)*0.4,r:1.4+Math.random()*1.2,life:800+Math.random()*400});
-      if(idleParticles.length>PARAM.IDLE_MAX) idleParticles.splice(0,idleParticles.length-PARAM.IDLE_MAX);
-    }
-    function drawFlowGrid(w,h){ pCtx.strokeStyle='rgba(13,27,42,0.06)'; for(let y=0;y<=h;y+=40){ pCtx.beginPath(); pCtx.moveTo(0,y+.5); pCtx.lineTo(w,y+.5); pCtx.stroke(); } }
-    function drawFutureBin(w,h,now){
-      const fx=w-120,fy=40,fw=100,fh=h-80; const pulse=(Math.sin(now/900)+1)/2*PARAM.FUTURE_PULSE_STRENGTH;
-      pCtx.fillStyle=`rgba(0,163,255,${0.06+pulse})`; pCtx.fillRect(fx,fy,fw,fh);
-      const grad=pCtx.createLinearGradient(fx,0,fx+fw,0); grad.addColorStop(0,'rgba(255,255,255,0)'); grad.addColorStop(0.5,`rgba(255,255,255,${0.10+pulse})`); grad.addColorStop(1,'rgba(255,255,255,0)');
-      pCtx.fillStyle=grad; pCtx.fillRect(fx,fy,fw,fh); return {fx,fy,fw,fh};
-    }
-    function flowNoise(w,h,now){
-      pCtx.save(); pCtx.globalAlpha=0.08; pCtx.lineWidth=1; pCtx.strokeStyle='rgba(25,64,87,0.35)';
-      for(let i=0;i<8;i++){ const y=(now/40+i*22)%(h-60)+30; pCtx.beginPath(); pCtx.moveTo(10,y); pCtx.quadraticCurveTo(w*0.35,y+Math.sin((now+i*300)/700)*8,w-140,y+Math.cos((now+i*150)/900)*10); pCtx.stroke(); }
-      pCtx.restore();
-    }
-    function tick(){
-      const w=pCanvas.width,h=pCanvas.height,now=performance.now();
-      pCtx.clearRect(0,0,w,h); drawFlowGrid(w,h); const bin=drawFutureBin(w,h,now); flowNoise(w,h,now);
-      if(now-lastIdleSpawn>1000){ spawnIdle(PARAM.IDLE_SPAWN_PER_SEC); lastIdleSpawn=now; }
-      if(now-lastDrizzle>PARAM.DRIZZLE_EVERY_SEC*1000){ spawnYesParticles(PARAM.DRIZZLE_COUNT); lastDrizzle=now; }
-      for(let i=idleParticles.length-1;i>=0;i--){ const p=idleParticles[i],ax=(bin.fx-p.x)/50000,ay=((bin.fy+bin.fh/2)-p.y)/80000; p.vx+=ax; p.vy+=ay; p.x+=p.vx; p.y+=p.vy; p.life--; pCtx.fillStyle='rgba(0,163,255,0.55)'; pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r,0,Math.PI*2); pCtx.fill(); if(p.x>bin.fx+bin.fw||p.y<0||p.y>h||p.life<=0) idleParticles.splice(i,1); }
-      for(let i=particles.length-1;i>=0;i--){ const pt=particles[i],ax=(bin.fx-pt.x)/900,ay=((bin.fy+bin.fh/2)-pt.y)/1200; pt.vx+=ax; pt.vy+=ay; pt.x+=pt.vx; pt.y+=pt.vy; pt.life--; pt.trail.unshift({x:pt.x,y:pt.y}); if(pt.trail.length>PARAM.TRAIL_LENGTH) pt.trail.pop();
-        pCtx.save(); pCtx.globalCompositeOperation='lighter'; for(let t=0;t<pt.trail.length;t++){ const f=(1-t/pt.trail.length)*(pt.burst?0.9:0.6); pCtx.fillStyle=`rgba(53,201,135,${f*PARAM.TRAIL_FADE*(pt.burst?2.0:1.0)})`; const tr=Math.max(0.8,pt.r*(0.9-t/pt.trail.length*0.6)); pCtx.beginPath(); pCtx.arc(pt.trail[t].x,pt.trail[t].y,tr,0,Math.PI*2); pCtx.fill(); } pCtx.restore();
-        const age=performance.now()-pt.born; if(age<PARAM.YES_FLASH_MS){ const k=1-age/PARAM.YES_FLASH_MS; pCtx.save(); pCtx.globalAlpha=0.25*k*(pt.burst?1.3:1.0); pCtx.beginPath(); pCtx.arc(pt.x,pt.y,pt.r*(2.4-1.2*k),0,Math.PI*2); pCtx.fillStyle='rgba(255,255,255,1)'; pCtx.fill(); pCtx.restore(); }
-        pCtx.fillStyle=pt.burst?'rgba(255,255,255,0.95)':pt.col; pCtx.beginPath(); pCtx.arc(pt.x,pt.y,pt.r,0,Math.PI*2); pCtx.fill();
-        if(pt.x>bin.fx+bin.fw||pt.life<=0) particles.splice(i,1);
-      }
-      requestAnimationFrame(tick);
-    }
-
-    /* ========= Sankey & Timeline ========= */
-    const sankeySvg = d3.select('#sankey');
-    function isYes(v){ const a=v?.answer; if(typeof a==='string') return a.trim().toLowerCase()==='yes'; if(typeof a==='boolean') return a===true; return false; }
-    function tsMs(v){ const t=v?.ts; if(!t) return 0; if(typeof t.toDate==='function') return t.toDate().getTime(); if(t instanceof Date) return t.getTime(); return 0; }
+    /* ===== Sankey & Timeline ===== */
+    const sankeySvg=d3.select('#sankey'); const tlSvg=d3.select('#timeline');
+    function isYes(v){const a=v?.answer; if(typeof a==='string')return a.trim().toLowerCase()==='yes'; if(typeof a==='boolean')return a===true; return false;}
+    function tsMs(v){const t=v?.ts; if(!t) return 0; if(typeof t.toDate==='function') return t.toDate().getTime(); if(t instanceof Date) return t.getTime(); return 0;}
 
     function drawSankey(votes){
-      const bbox=sankeySvg.node().getBoundingClientRect(); const W=bbox.width,H=bbox.height;
+      const W=sankeySvg.node().getBoundingClientRect().width, H=sankeySvg.node().getBoundingClientRect().height;
       sankeySvg.selectAll('*').remove();
-      // 1票以上あるプロダクトのみ
-      const countByPid = d3.rollup(votes, vv=>vv.length, v=>v.productId);
-      const active = Array.from(countByPid.keys());
+      if(votes.length===0){
+        sankeySvg.append('text').attr('x',12).attr('y',24).text(`No data for session "${SESSION_ID}"`).attr('fill','#4f6b83').style('font','12px system-ui');
+        return;
+      }
+      const countByPid=d3.rollup(votes, vv=>vv.length, v=>v.productId);
+      const active=Array.from(countByPid.keys());
       const S=d3.sankey().nodeWidth(12).nodePadding(12).extent([[10,10],[W-10,H-10]]);
       const nodes=[], idx=new Map(); const add=n=>{ if(!idx.has(n)){ idx.set(n,nodes.length); nodes.push({name:n}); } return idx.get(n); };
-
-      active.forEach(pid=> add(PRODUCT_NAME.get(pid)||pid));
-      add('Yes'); add('No'); add('Future');
-
+      active.forEach(pid=> add(PRODUCT_NAME.get(pid)||pid)); add('Yes'); add('No'); add('Future');
       const links=[];
       active.forEach(pid=>{
-        const pv=votes.filter(v=>v.productId===pid);
-        const y=pv.filter(isYes).length, n=pv.length - y;
+        const pv=votes.filter(v=>v.productId===pid); const y=pv.filter(isYes).length, n=pv.length-y;
         if(y>0) links.push({source:add(PRODUCT_NAME.get(pid)||pid), target:add('Yes'), value:y});
         if(n>0) links.push({source:add(PRODUCT_NAME.get(pid)||pid), target:add('No'),  value:n});
       });
-      const totalYes = votes.filter(isYes).length;
-      if(totalYes>0) links.push({source:add('Yes'), target:add('Future'), value:totalYes});
-
+      const totalYes=votes.filter(isYes).length; if(totalYes>0) links.push({source:add('Yes'), target:add('Future'), value:totalYes});
       const g=S({nodes:nodes.map(d=>({...d})), links:links.map(d=>({...d}))});
       sankeySvg.append('g').selectAll('path').data(g.links).enter().append('path')
         .attr('d', d3.sankeyLinkHorizontal()).attr('fill','none')
@@ -251,23 +184,29 @@
         .attr('stroke-opacity', .55).attr('stroke-width', d=>Math.max(1,d.width));
       const node=sankeySvg.append('g').selectAll('g').data(g.nodes).enter().append('g');
       node.append('rect').attr('x',d=>d.x0).attr('y',d=>d.y0).attr('height',d=>Math.max(1,d.y1-d.y0)).attr('width',d=>d.x1-d.x0)
-        .attr('fill', d=> d.name==='No'?getComputedStyle(document.documentElement).getPropertyValue('--no'): d.name==='Yes'?getComputedStyle(document.documentElement).getPropertyValue('--ok'): d.name==='Future'?getComputedStyle(document.documentElement).getPropertyValue('--future'):'#9bd7ff')
+        .attr('fill',d=> d.name==='No'? getComputedStyle(document.documentElement).getPropertyValue('--no')
+                           : d.name==='Yes'? getComputedStyle(document.documentElement).getPropertyValue('--ok')
+                           : d.name==='Future'? getComputedStyle(document.documentElement).getPropertyValue('--future'):'#9bd7ff')
         .attr('opacity',.9).attr('stroke','#bfe7ff');
       node.append('text').attr('x',d=> d.x0<W/2? d.x1+6: d.x0-6).attr('y',d=> (d.y1+d.y0)/2).attr('dy','0.35em')
         .attr('text-anchor',d=> d.x0<W/2?'start':'end').text(d=>d.name).attr('fill','#194057').style('font','12px system-ui');
     }
 
-    const tlSvg = d3.select('#timeline');
     function drawTimeline(votes){
-      const bbox=tlSvg.node().getBoundingClientRect(); const W=bbox.width,H=bbox.height;
-      tlSvg.selectAll('*').remove(); if(votes.length===0) return;
-      // 分ごと集計（クライアント側でソート）
-      const key=(d)=>{ const t = new Date(tsMs(d)||Date.now()); t.setSeconds(0,0); return +t; };
-      const groups=d3.rollup(votes, vv=>({yes: vv.filter(isYes).length, no: vv.filter(v=>!isYes(v)).length}), key);
-      const data=Array.from(groups, ([k,v])=>({t:+k, yes:v.yes, no:v.no})).sort((a,b)=>a.t-b.t);
+      const W=tlSvg.node().getBoundingClientRect().width, H=tlSvg.node().getBoundingClientRect().height;
+      tlSvg.selectAll('*').remove();
+      // 票が無くても軸は出す
+      const data = (()=> {
+        if(votes.length===0){
+          const t = Date.now(); return [{t, yes:0, no:0}];
+        }
+        const key = (d)=>{ const t=new Date(tsMs(d)||Date.now()); t.setSeconds(0,0); return +t; };
+        const groups=d3.rollup(votes, vv=>({yes: vv.filter(isYes).length, no: vv.filter(v=>!isYes(v)).length}), key);
+        return Array.from(groups, ([k,v])=>({t:+k, yes:v.yes, no:v.no})).sort((a,b)=>a.t-b.t);
+      })();
 
       const x=d3.scaleBand().domain(data.map(d=>d.t)).range([40,W-10]).padding(.2);
-      const y=d3.scaleLinear().domain([0,d3.max(data,d=>d.yes+d.no)||1]).nice().range([H-30,10]);
+      const y=d3.scaleLinear().domain([0, d3.max(data,d=>d.yes+d.no)||1]).nice().range([H-30,10]);
 
       const axis=d3.axisBottom(d3.scaleTime().domain(d3.extent(data,d=>new Date(d.t))).range([40,W-10])).ticks(5);
       tlSvg.append('g').attr('transform',`translate(0,${H-28})`).call(axis).selectAll('text').attr('fill','#4f6b83');
@@ -275,13 +214,13 @@
 
       tlSvg.selectAll('.bar-no').data(data).enter().append('rect')
         .attr('x',d=>x(d.t)).attr('y',d=>y(d.no)).attr('width',x.bandwidth()).attr('height',d=>y(0)-y(d.no))
-        .attr('fill',getComputedStyle(document.documentElement).getPropertyValue('--no')).attr('opacity',.85);
+        .attr('fill',getComputedStyle(document.documentElement).getPropertyValue('--no')).attr('opacity',.2);
       tlSvg.selectAll('.bar-yes').data(data).enter().append('rect')
         .attr('x',d=>x(d.t)).attr('y',d=>y(d.no+d.yes)).attr('width',x.bandwidth()).attr('height',d=>y(d.no)-y(d.no+d.yes))
-        .attr('fill',getComputedStyle(document.documentElement).getPropertyValue('--ok')).attr('opacity',.95);
+        .attr('fill',getComputedStyle(document.documentElement).getPropertyValue('--ok')).attr('opacity',.6);
     }
 
-    /* ========= Stats / Realtime ========= */
+    /* ===== Stats / Subscribe ===== */
     function updateStats(votes){
       const total=votes.length, yes=votes.filter(isYes).length;
       document.getElementById('totalVotes').textContent=total;
@@ -289,6 +228,7 @@
       document.getElementById('prodCount').textContent=PRODUCTS.length;
     }
     function onData(votes){
+      console.info(`[viz] session=${SESSION_ID} votes=${votes.length}`);
       drawSankey(votes); drawTimeline(votes); updateStats(votes);
     }
 
@@ -296,20 +236,17 @@
       let initial=true;
       const handleSnapshot=(snap)=>{
         const votes=[]; snap.forEach(doc=> votes.push(doc.data()));
-        votes.sort((a,b)=> tsMs(a)-tsMs(b)); // クライアント側で時系列化
+        votes.sort((a,b)=> tsMs(a)-tsMs(b));
         onData(votes);
-
         if(initial){ initial=false; return; }
         snap.docChanges().forEach(ch=>{
           if(ch.type==='added' && isYes(ch.doc.data())){ spawnYesBurst(6); spawnYesParticles(10); }
         });
       };
-
-      // orderBy付きで試し、失敗したらフォールバック
       try{
         votesRef.where('session','==',SESSION_ID).orderBy('ts','asc')
           .onSnapshot(handleSnapshot, err=>{
-            console.warn('index error -> fallback', err);
+            console.warn('index error -> fallback without orderBy', err);
             votesRef.where('session','==',SESSION_ID).onSnapshot(handleSnapshot);
           });
       }catch(e){
@@ -318,22 +255,14 @@
       }
     }
 
-    /* ========= レイアウト起動 ========= */
-    function setHeaderHeightVar(){ const hdr=document.getElementById('hdr'); if(!hdr) return; document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px'); }
-    function fit(){
-      const box=document.getElementById('flowChartBox'); const c=document.getElementById('particles'); if(!box||!c) return;
-      const style=getComputedStyle(box); const padX=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight); const padY=parseFloat(style.paddingTop)+parseFloat(style.paddingBottom);
-      const w=Math.max(900, box.clientWidth-padX); const h=Math.max(260, box.clientHeight-padY); c.width=w; c.height=h;
-    }
+    /* ===== レイアウト起動 ===== */
+    function setHeaderHeightVar(){const hdr=document.getElementById('hdr'); if(!hdr) return; document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px');}
+    function fit(){const box=document.getElementById('flowChartBox'); const c=document.getElementById('particles'); if(!box||!c) return; const style=getComputedStyle(box); const padX=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight); const padY=parseFloat(style.paddingTop)+parseFloat(style.paddingBottom); const w=Math.max(900, box.clientWidth-padX); const h=Math.max(260, box.clientHeight-padY); c.width=w; c.height=h;}
     new ResizeObserver(()=>{ setHeaderHeightVar(); fit(); }).observe(document.body);
     new ResizeObserver(()=>{ fit(); }).observe(document.getElementById('flowChartBox'));
-
     setHeaderHeightVar(); fit(); subscribe(); tick();
 
-    document.getElementById('btn-full').addEventListener('click',()=>{
-      const el=document.documentElement;
-      if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
-    });
+    document.getElementById('btn-full').addEventListener('click',()=>{const el=document.documentElement; if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }});
 
     (function bubblesFX(){
       const root=document.querySelector('.bubbles'); if(!root) return;
