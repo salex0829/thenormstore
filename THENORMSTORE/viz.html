@@ -21,17 +21,13 @@
         radial-gradient(1200px 700px at 80% -10%, #ffffff 0%, transparent 60%),
         radial-gradient(1800px 900px at -10% 10%, var(--bg1) 0%, transparent 55%),
         linear-gradient(180deg, var(--bg2), var(--bg3));
-      background-size: auto, auto, 100% 100%;
+      background-size:auto,auto,100% 100%;
       animation: skyShift 18s ease-in-out infinite;
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
       overflow-x:hidden;
     }
-    @keyframes skyShift {
-      0%{background-position:0 0,0 0,0 0}
-      50%{background-position:0 -3%,-2% 2%,0 0}
-      100%{background-position:0 0,0 0,0 0}
-    }
+    @keyframes skyShift {0%{background-position:0 0,0 0,0 0}50%{background-position:0 -3%,-2% 2%,0 0}100%{background-position:0 0,0 0,0 0}}
     .bubbles{position:fixed; inset:0; pointer-events:none; z-index:1}
     .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#fff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
     .b1{width:180px;height:180px;left:6%;top:14%;filter:blur(2px);opacity:.55}
@@ -82,6 +78,7 @@
     #flowPanel{display:flex; flex-direction:column; min-height:0}
     #flowChartBox{flex:1; min-height:260px}
   </style>
+
   <!-- Firebase & D3 -->
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
@@ -126,20 +123,34 @@
   </main>
 
   <script>
-    // ===== Firebase =====
+    /* ================= Firebase & Config ================= */
     const firebaseConfig = { apiKey:"AIzaSyCDdz7o8PoUdr28-8TZhEk33SP14aWuIzs", authDomain:"thenorm-5caf7.firebaseapp.com", projectId:"thenorm-5caf7" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const votesRef = db.collection('votes');
 
+    // ★★★ 展示ごとに変更してください（select.html でも同じ値を送信すること）
+    const SESSION_ID = "20251016_shibuya_a";
+
+    // プロダクト定義（表示順はここで決まる）
     const PRODUCTS = [
-      {id:'p1',name:'環境同期ヘッドセット'},
-      {id:'p2',name:'気配センサー・ドアノブ'},
-      {id:'p3',name:'感情株価ウォッチ'},
-      {id:'p4',name:'記憶再生レコーダー'}
+      { id:'p1',                name:'Rable Fashion System p1',  cat:'FASHION',      file:'p1.png' },
+      { id:'fashion2',         name:'BioGlow Wear',   cat:'FASHION',  file:'fashion_2.png' },
+      { id:'imkp_fashion2',    name:'Echo Void Boots', cat:'FASHION',  file:'imkp_Fashion_2.png' },
+      { id:'imkp_fashion6',    name:'Ascent Robe', cat:'FASHION',  file:'imkp_Fashion_6.png' },
+      { id:'food1',            name:'Neutri',         cat:'FOOD',     file:'food_1.png' },
+      { id:'food2',            name:'Oyakome',         cat:'FOOD',     file:'food_2.png' },
+      { id:'imkp_food2',       name:'Healthy Fit Fast',  cat:'FOOD',     file:'imkp_Food_2.png' },
+      { id:'imkp_food3',       name:'Genfood',  cat:'FOOD',     file:'imkp_Food_3.png' },
+      { id:'edu1',             name:'C-Suite Kindergarten', cat:'EDUCATION', file:'edu_1.png' },
+      { id:'edu2',             name:'LEGENDS LIVE 2.0', cat:'EDUCATION', file:'edu_2.png' },
+      { id:'imkp_edu1',        name:'Kinokura', cat:'EDUCATION', file:'imkp_Education_1.png' },
+      { id:'imkp_edu3',        name:'Mirai', cat:'EDUCATION', file:'imkp_Education_3.png' },
+      { id:'house',            name:'Onomatopedia',            cat:'HOME',     file:'house.png' },
+      { id:'house1',           name:'BareSync',         cat:'HOME',     file:'house_1.png' },
     ];
 
-    /* ========= 背景スパークル ========= */
+    /* ================= 背景スパークル ================= */
     (function sparkle(){
       const c = document.getElementById('bgSparkle'); if(!c) return;
       const ctx = c.getContext('2d', { alpha:true });
@@ -165,11 +176,10 @@
       })();
     })();
 
-    /* ========= FLOW：Yes粒子 + アンビエント ========= */
+    /* ================= 可視化：粒子 ================= */
     const pCanvas = document.getElementById('particles');
     const pCtx = pCanvas.getContext('2d');
 
-    // 🎛 パラメータ（お好みで調整）
     const PARAM = {
       IDLE_SPAWN_PER_SEC: 6,
       IDLE_BASE_SPEED: 1.2,
@@ -177,107 +187,66 @@
       DRIZZLE_EVERY_SEC: 8,
       DRIZZLE_COUNT: 8,
       FUTURE_PULSE_STRENGTH: .12,
-
-      // ==== YES 強調用 ====
-      YES_BASE_R: 3.0,          // 通常YES粒子サイズ（元より少し大きめ）
-      YES_BURST_R_MIN: 5.0,     // バースト瞬間の最小半径
-      YES_BURST_R_MAX: 7.5,     // バースト瞬間の最大半径
-      YES_FLASH_MS: 450,        // 到着瞬間の“発光”継続時間
-      TRAIL_LENGTH: 12,         // 軌跡の残像数
-      TRAIL_FADE: 0.08          // 軌跡フェード強度
+      YES_BASE_R: 3.0,
+      YES_BURST_R_MIN: 5.0,
+      YES_BURST_R_MAX: 7.5,
+      YES_FLASH_MS: 450,
+      TRAIL_LENGTH: 12,
+      TRAIL_FADE: 0.08
     };
 
-    let particles = [];      // データ発生やドリズルで出る粒子
-    let idleParticles = [];  // 常時ふわふわ動く粒子
-    let prevYes = 0;
-    let lastIdleSpawn = 0;
-    let lastDrizzle = 0;
+    let particles = [], idleParticles = [];
+    let lastIdleSpawn = 0, lastDrizzle = 0;
 
-    // ===== YES 粒子（通常）=====
     function spawnYesParticles(n){
       const h = pCanvas.height;
       for(let i=0;i<n;i++){
-        particles.push({
-          x: -20,
-          y: 40 + Math.random() * (h - 80),
-          vx: 2.0 + Math.random() * 3.0,
-          vy: (Math.random() - .5) * 1.0,
-          life: 220 + Math.random() * 100,
-          r: PARAM.YES_BASE_R,
-          col: 'rgba(53,201,135,0.95)', // グリーン
-          burst: false,
-          born: performance.now(),
-          trail: []
-        });
+        particles.push({ x:-20, y:40+Math.random()*(h-80),
+          vx:2.0+Math.random()*3.0, vy:(Math.random()-.5)*1.0,
+          life:220+Math.random()*100, r:PARAM.YES_BASE_R,
+          col:'rgba(53,201,135,0.95)', burst:false, born:performance.now(), trail:[] });
       }
     }
-    // ===== YES 粒子（バースト：強調）=====
     function spawnYesBurst(k){
       const h = pCanvas.height;
-      for(let i=0;i<k; i++){
-        particles.push({
-          x: -30,
-          y: 40 + Math.random() * (h - 80),
-          vx: 2.4 + Math.random() * 3.2,
-          vy: (Math.random() - .5) * 1.2,
-          life: 260 + Math.random() * 120,
-          r: PARAM.YES_BURST_R_MIN + Math.random() * (PARAM.YES_BURST_R_MAX - PARAM.YES_BURST_R_MIN),
-          col: 'rgba(255,255,255,1)', // 白くフラッシュ
-          burst: true,
-          born: performance.now(),
-          trail: []
-        });
+      for(let i=0;i<k;i++){
+        particles.push({ x:-30, y:40+Math.random()*(h-80),
+          vx:2.4+Math.random()*3.2, vy:(Math.random()-.5)*1.2,
+          life:260+Math.random()*120,
+          r:PARAM.YES_BURST_R_MIN+Math.random()*(PARAM.YES_BURST_R_MAX-PARAM.YES_BURST_R_MIN),
+          col:'rgba(255,255,255,1)', burst:true, born:performance.now(), trail:[] });
       }
     }
-    // ===== 常時（Idle）=====
     function spawnIdle(k){
       const h = pCanvas.height;
       for(let i=0;i<k;i++){
-        idleParticles.push({
-          x: Math.random()*pCanvas.width*0.6, // 左寄りから
-          y: 20+Math.random()*(h-40),
-          vx: PARAM.IDLE_BASE_SPEED*(0.6+Math.random()*0.8),
-          vy: (Math.random()-.5)*0.4,
-          r: 1.4 + Math.random()*1.2,
-          life: 800 + Math.random()*400
-        });
+        idleParticles.push({ x:Math.random()*pCanvas.width*0.6, y:20+Math.random()*(h-40),
+          vx:PARAM.IDLE_BASE_SPEED*(0.6+Math.random()*0.8), vy:(Math.random()-.5)*0.4,
+          r:1.4+Math.random()*1.2, life:800+Math.random()*400 });
       }
-      if(idleParticles.length > PARAM.IDLE_MAX) idleParticles.splice(0, idleParticles.length-PARAM.IDLE_MAX);
+      if(idleParticles.length>PARAM.IDLE_MAX) idleParticles.splice(0, idleParticles.length-PARAM.IDLE_MAX);
     }
 
     function drawFlowGrid(w,h){
       pCtx.strokeStyle='rgba(13,27,42,0.06)';
       for(let y=0;y<=h;y+=40){ pCtx.beginPath(); pCtx.moveTo(0,y+.5); pCtx.lineTo(w,y+.5); pCtx.stroke(); }
     }
-
     function drawFutureBin(w,h, now){
       const fx=w-120, fy=40, fw=100, fh=h-80;
-      const pulse = (Math.sin(now/900)+1)/2 * PARAM.FUTURE_PULSE_STRENGTH; // 0〜strength
-      pCtx.fillStyle=`rgba(0,163,255,${0.06 + pulse})`;
-      pCtx.fillRect(fx,fy,fw,fh);
-
-      // うっすら縦シマー
-      const grad = pCtx.createLinearGradient(fx,0,fx+fw,0);
+      const pulse=(Math.sin(now/900)+1)/2*PARAM.FUTURE_PULSE_STRENGTH;
+      pCtx.fillStyle=`rgba(0,163,255,${0.06+pulse})`; pCtx.fillRect(fx,fy,fw,fh);
+      const grad=pCtx.createLinearGradient(fx,0,fx+fw,0);
       grad.addColorStop(0,'rgba(255,255,255,0)');
-      grad.addColorStop(0.5,`rgba(255,255,255,${0.10 + pulse})`);
+      grad.addColorStop(0.5,`rgba(255,255,255,${0.10+pulse})`);
       grad.addColorStop(1,'rgba(255,255,255,0)');
-      pCtx.fillStyle = grad;
-      pCtx.fillRect(fx,fy,fw,fh);
-
+      pCtx.fillStyle=grad; pCtx.fillRect(fx,fy,fw,fh);
       return {fx,fy,fw,fh};
     }
-
     function flowNoise(w,h, now){
-      // 風の筋（超薄いライン）
-      const lines = 8;
-      pCtx.save();
-      pCtx.globalAlpha = 0.08;
-      pCtx.lineWidth = 1;
-      pCtx.strokeStyle = 'rgba(25,64,87,0.35)';
-      for(let i=0;i<lines;i++){
-        const y = (now/40 + i*22) % (h-60) + 30;
-        pCtx.beginPath();
-        pCtx.moveTo(10,y);
+      pCtx.save(); pCtx.globalAlpha=0.08; pCtx.lineWidth=1; pCtx.strokeStyle='rgba(25,64,87,0.35)';
+      for(let i=0;i<8;i++){
+        const y=(now/40+i*22)%(h-60)+30;
+        pCtx.beginPath(); pCtx.moveTo(10,y);
         pCtx.quadraticCurveTo(w*0.35, y+Math.sin((now+i*300)/700)*8, w-140, y+Math.cos((now+i*150)/900)*10);
         pCtx.stroke();
       }
@@ -285,102 +254,63 @@
     }
 
     function tick(){
-      const w = pCanvas.width, h = pCanvas.height;
-      const now = performance.now();
-
-      // クリア＆背景
+      const w=pCanvas.width, h=pCanvas.height, now=performance.now();
       pCtx.clearRect(0,0,w,h);
       drawFlowGrid(w,h);
-      const bin = drawFutureBin(w,h, now);
-      flowNoise(w,h, now);
+      const bin=drawFutureBin(w,h,now);
+      flowNoise(w,h,now);
 
-      // --- Idle spawn（毎秒）
-      if(now - lastIdleSpawn > 1000){
-        spawnIdle(PARAM.IDLE_SPAWN_PER_SEC);
-        lastIdleSpawn = now;
-      }
-      // --- Drizzle（小さな流れ）
-      if(now - lastDrizzle > PARAM.DRIZZLE_EVERY_SEC*1000){
-        spawnYesParticles(PARAM.DRIZZLE_COUNT);
-        lastDrizzle = now;
-      }
+      if(now-lastIdleSpawn>1000){ spawnIdle(PARAM.IDLE_SPAWN_PER_SEC); lastIdleSpawn=now; }
+      if(now-lastDrizzle>PARAM.DRIZZLE_EVERY_SEC*1000){ spawnYesParticles(PARAM.DRIZZLE_COUNT); lastDrizzle=now; }
 
-      // --- idle 粒子更新
       for(let i=idleParticles.length-1;i>=0;i--){
-        const p = idleParticles[i];
-        // FUTUREへ緩く吸い寄せ
-        const ax = (bin.fx - p.x)/50000, ay = ((bin.fy+bin.fh/2) - p.y)/80000;
-        p.vx += ax; p.vy += ay;
-        p.x += p.vx; p.y += p.vy; p.life--;
-
-        pCtx.fillStyle='rgba(0,163,255,0.55)';
-        pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r,0,Math.PI*2); pCtx.fill();
-
-        if(p.x>bin.fx+bin.fw || p.y<0 || p.y>h || p.life<=0){ idleParticles.splice(i,1); }
+        const p=idleParticles[i], ax=(bin.fx-p.x)/50000, ay=((bin.fy+bin.fh/2)-p.y)/80000;
+        p.vx+=ax; p.vy+=ay; p.x+=p.vx; p.y+=p.vy; p.life--;
+        pCtx.fillStyle='rgba(0,163,255,0.55)'; pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r,0,Math.PI*2); pCtx.fill();
+        if(p.x>bin.fx+bin.fw||p.y<0||p.y>h||p.life<=0) idleParticles.splice(i,1);
       }
 
-      // --- データ粒子更新（発光＋軌跡つき）
       for(let i=particles.length-1;i>=0;i--){
-        const pt = particles[i];
+        const pt=particles[i], ax=(bin.fx-pt.x)/900, ay=((bin.fy+bin.fh/2)-pt.y)/1200;
+        pt.vx+=ax; pt.vy+=ay; pt.x+=pt.vx; pt.y+=pt.vy; pt.life--;
+        pt.trail.unshift({x:pt.x,y:pt.y}); if(pt.trail.length>PARAM.TRAIL_LENGTH) pt.trail.pop();
 
-        // FUTURE に吸い寄せ
-        const ax = (bin.fx - pt.x) / 900;
-        const ay = ((bin.fy + bin.fh/2) - pt.y) / 1200;
-        pt.vx += ax; pt.vy += ay;
-        pt.x  += pt.vx; pt.y  += pt.vy;
-        pt.life--;
-
-        // 直近座標を軌跡として保存
-        pt.trail.unshift({x: pt.x, y: pt.y});
-        if(pt.trail.length > PARAM.TRAIL_LENGTH) pt.trail.pop();
-
-        // 軌跡（薄い残像ライン）
-        pCtx.save();
-        pCtx.globalCompositeOperation = 'lighter'; // 加算でふわっと
-        for(let t=0; t<pt.trail.length; t++){
-          const f = (1 - t/pt.trail.length) * (pt.burst ? 0.9 : 0.6);
-          pCtx.fillStyle = `rgba(53,201,135,${f * PARAM.TRAIL_FADE * (pt.burst? 2.0:1.0)})`;
-          const tr = Math.max(0.8, pt.r * (0.9 - t/pt.trail.length*0.6));
+        pCtx.save(); pCtx.globalCompositeOperation='lighter';
+        for(let t=0;t<pt.trail.length;t++){
+          const f=(1-t/pt.trail.length)*(pt.burst?0.9:0.6);
+          pCtx.fillStyle=`rgba(53,201,135,${f*PARAM.TRAIL_FADE*(pt.burst?2.0:1.0)})`;
+          const tr=Math.max(0.8, pt.r*(0.9-t/pt.trail.length*0.6));
           pCtx.beginPath(); pCtx.arc(pt.trail[t].x, pt.trail[t].y, tr, 0, Math.PI*2); pCtx.fill();
         }
         pCtx.restore();
 
-        // 発生直後フラッシュ（外側グロー）
-        const age = performance.now() - pt.born;
-        if(age < PARAM.YES_FLASH_MS){
-          const k = 1 - age / PARAM.YES_FLASH_MS; // 1→0
-          pCtx.save();
-          pCtx.globalAlpha = 0.25 * k * (pt.burst ? 1.3 : 1.0);
-          pCtx.beginPath();
-          pCtx.arc(pt.x, pt.y, pt.r * (2.4 - 1.2*k), 0, Math.PI*2);
-          pCtx.fillStyle = 'rgba(255,255,255,1)';
-          pCtx.fill();
-          pCtx.restore();
+        const age=performance.now()-pt.born;
+        if(age<PARAM.YES_FLASH_MS){
+          const k=1-age/PARAM.YES_FLASH_MS;
+          pCtx.save(); pCtx.globalAlpha=0.25*k*(pt.burst?1.3:1.0);
+          pCtx.beginPath(); pCtx.arc(pt.x,pt.y,pt.r*(2.4-1.2*k),0,Math.PI*2);
+          pCtx.fillStyle='rgba(255,255,255,1)'; pCtx.fill(); pCtx.restore();
         }
 
-        // 本体
-        pCtx.fillStyle = pt.burst ? 'rgba(255,255,255,0.95)' : pt.col;
-        pCtx.beginPath();
-        pCtx.arc(pt.x, pt.y, pt.r, 0, Math.PI*2);
-        pCtx.fill();
+        pCtx.fillStyle = pt.burst? 'rgba(255,255,255,0.95)' : pt.col;
+        pCtx.beginPath(); pCtx.arc(pt.x,pt.y,pt.r,0,Math.PI*2); pCtx.fill();
 
-        // 画面外/寿命切れで消去
-        if(pt.x > bin.fx + bin.fw || pt.life <= 0){
-          particles.splice(i,1);
-        }
+        if(pt.x>bin.fx+bin.fw||pt.life<=0) particles.splice(i,1);
       }
-
       requestAnimationFrame(tick);
     }
 
-    /* ========= Sankey & Timeline ========= */
+    /* ================= Sankey & Timeline ================= */
     const sankeySvg = d3.select('#sankey');
     function drawSankey(votes){
       const bbox = sankeySvg.node().getBoundingClientRect(); const W=bbox.width, H=bbox.height;
       sankeySvg.selectAll('*').remove();
+
       const S = d3.sankey().nodeWidth(12).nodePadding(12).extent([[10,10],[W-10,H-10]]);
       const nodes=[], idx=new Map(); const add=n=>{ if(!idx.has(n)){ idx.set(n,nodes.length); nodes.push({name:n}); } return idx.get(n); };
+
       PRODUCTS.forEach(p=>add(p.name)); add('Yes'); add('No'); add('Future');
+
       const links=[];
       PRODUCTS.forEach(p=>{
         const pv=votes.filter(v=>v.productId===p.id);
@@ -388,14 +318,16 @@
         if(y>0) links.push({source:add(p.name), target:add('Yes'), value:y});
         if(n>0) links.push({source:add(p.name), target:add('No'),  value:n});
       });
-      const totalYes = votes.filter(v=>isYes(v)).length;
+      const totalYes=votes.filter(isYes).length;
       if(totalYes>0) links.push({source:add('Yes'), target:add('Future'), value:totalYes});
 
-      const g = S({nodes:nodes.map(d=>({...d})), links:links.map(d=>({...d}))});
+      const g=S({nodes:nodes.map(d=>({...d})), links:links.map(d=>({...d}))});
+
       sankeySvg.append('g').selectAll('path').data(g.links).enter().append('path')
         .attr('d', d3.sankeyLinkHorizontal()).attr('fill','none')
         .attr('stroke', d=> d.target.name==='No' ? getComputedStyle(document.documentElement).getPropertyValue('--no') : getComputedStyle(document.documentElement).getPropertyValue('--ok'))
         .attr('stroke-opacity', .55).attr('stroke-width', d=>Math.max(1,d.width));
+
       const node = sankeySvg.append('g').selectAll('g').data(g.nodes).enter().append('g');
       node.append('rect').attr('x',d=>d.x0).attr('y',d=>d.y0).attr('height',d=>Math.max(1,d.y1-d.y0)).attr('width',d=>d.x1-d.x0)
         .attr('fill', d=>{
@@ -431,88 +363,72 @@
         .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--ok')).attr('opacity', .95);
     }
 
-    /* ========= YES判定 / Stats / Realtime ========= */
-    // YESの表記ゆれに対応
+    /* ================= YES判定 / サブスクライブ ================= */
     function isYes(v){
-      const a = v?.answer;
-      if (typeof a === 'string') return a.trim().toLowerCase() === 'yes';
-      if (typeof a === 'boolean') return a === true;
+      const a=v?.answer;
+      if(typeof a==='string') return a.trim().toLowerCase()==='yes';
+      if(typeof a==='boolean') return a===true;
       return false;
     }
 
     function updateStats(votes){
       const total=votes.length, yes=votes.filter(isYes).length;
-      document.getElementById('totalVotes').textContent = total;
-      document.getElementById('yesRate').textContent = total? Math.round((yes/total)*100)+'%' : '0%';
-      document.getElementById('prodCount').textContent = PRODUCTS.length;
+      document.getElementById('totalVotes').textContent=total;
+      document.getElementById('yesRate').textContent= total? Math.round((yes/total)*100)+'%' : '0%';
+      document.getElementById('prodCount').textContent=PRODUCTS.length;
     }
-
     function onData(votes){
-      // 集計とチャート更新（演出トリガーは docChanges に任せる）
-      prevYes = votes.filter(isYes).length; // 一応同期だけ
-      drawSankey(votes);
-      drawTimeline(votes);
-      updateStats(votes);
+      drawSankey(votes); drawTimeline(votes); updateStats(votes);
     }
 
     function subscribe(){
-      let initial = true; // 初回読み込みでバーストしないためのフラグ
-      votesRef.orderBy('ts','asc').onSnapshot(snap=>{
-        const votes=[]; snap.forEach(doc=> votes.push(doc.data()));
-        onData(votes);
+      let initial=true;
+      votesRef
+        .where('session','==',SESSION_ID)   // ★ セッションで絞り込み
+        .orderBy('ts','asc')
+        .onSnapshot(snap=>{
+          const votes=[]; snap.forEach(doc=> votes.push(doc.data()));
+          onData(votes);
 
-        // 新規追加分への即応（初回はスキップ）
-        if (initial){ initial = false; return; }
-        snap.docChanges().forEach(ch=>{
-          if (ch.type === 'added'){
-            const v = ch.doc.data();
-            if (isYes(v)){
-              // YES到着：強調発火
-              spawnYesBurst(6);
-              spawnYesParticles(10);
+          if(initial){ initial=false; return; }
+          snap.docChanges().forEach(ch=>{
+            if(ch.type==='added'){
+              const v=ch.doc.data();
+              if(isYes(v)){ spawnYesBurst(6); spawnYesParticles(10); }
             }
-          }
+          });
         });
-      });
     }
 
-    /* ========= レイアウト起動 ========= */
+    /* ================= レイアウト起動 ================= */
     function setHeaderHeightVar(){
-      const hdr = document.getElementById('hdr'); if(!hdr) return;
+      const hdr=document.getElementById('hdr'); if(!hdr) return;
       document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px');
     }
     function fit(){
-      const box = document.getElementById('flowChartBox');
-      const c = document.getElementById('particles'); if(!box || !c) return;
-      const style = getComputedStyle(box);
-      const padX = parseFloat(style.paddingLeft)+parseFloat(style.paddingRight);
-      const padY = parseFloat(style.paddingTop)+parseFloat(style.paddingBottom);
-      const w = Math.max(900, box.clientWidth - padX);
-      const h = Math.max(260, box.clientHeight - padY);
-      c.width = w; c.height = h;
+      const box=document.getElementById('flowChartBox');
+      const c=document.getElementById('particles'); if(!box||!c) return;
+      const style=getComputedStyle(box);
+      const padX=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight);
+      const padY=parseFloat(style.paddingTop)+parseFloat(style.paddingBottom);
+      const w=Math.max(900, box.clientWidth-padX);
+      const h=Math.max(260, box.clientHeight-padY);
+      c.width=w; c.height=h;
     }
     new ResizeObserver(()=>{ setHeaderHeightVar(); fit(); }).observe(document.body);
     new ResizeObserver(()=>{ fit(); }).observe(document.getElementById('flowChartBox'));
 
-    // 起動
     setHeaderHeightVar(); fit(); subscribe(); tick();
 
-    // フルスクリーン
     document.getElementById('btn-full').addEventListener('click',()=>{
       const el=document.documentElement;
       if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
     });
 
-    // バブルの微パララックス
     (function bubblesFX(){
-      const root = document.querySelector('.bubbles'); if(!root) return;
-      const nodes = Array.from(root.querySelectorAll('i'));
-      nodes.forEach((el, i) => {
-        const dur = 10 + (i*2) + Math.random()*4;
-        const delay = (-i) + (Math.random()*-2);
-        el.style.animationDuration = `${dur}s`;
-        el.style.animationDelay = `${delay}s`;
-      });
+      const root=document.querySelector('.bubbles'); if(!root) return;
+      const nodes=Array.from(root.querySelectorAll('i'));
+      nodes.forEach((el,i)=>{ const dur=10+i*2+Math.random()*4; const delay=(-i)+(Math.random()*-2); el.style.animationDuration=`${dur}s`; el.style.animationDelay=`${delay}s`; });
       let tx=0,ty=0,cx=0,cy=0; const lerp=(a,b,t)=>a+(b-a)*t;
       function onMove(x,y){ const W=innerWidth,H=innerHeight; tx=(x/W-.5)*16; ty=(y/H-.5)*12; }
       addEventListener('mousemove',e=>onMove(e.clientX,e.clientY),{passive:true});
