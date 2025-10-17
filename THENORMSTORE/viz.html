@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Future Line | Visualization Console (Aero)</title>
+  <title>Future Line | Product Selector (2D + Animated BG)</title>
   <style>
     :root{
       --bg1:#eaf6ff; --bg2:#cfefff; --bg3:#bfe7ff;
-      --glass:#ffffffcc; --stroke:#e1f0f8;
-      --ink:#0d1b2a; --muted:#4f6b83;
-      --ok:#35c987; --no:#ff5a7a; --future:#00a3ff;
+      --glass:#ffffffcc; --stroke:#e1f0f8; --ink:#0d1b2a; --muted:#4f6b83;
+      --primary:#00a3ff; --accent:#4ce078; --danger:#ff5a7a;
       --shadow: 0 10px 30px rgba(13,27,42,.12), 0 2px 8px rgba(13,27,42,.06);
-      --hdrH: 64px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -25,416 +23,242 @@
       animation: skyShift 18s ease-in-out infinite;
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-      overflow-x:hidden;
     }
-    @keyframes skyShift {0%{background-position:0 0,0 0,0 0}50%{background-position:0 -3%,-2% 2%,0 0}100%{background-position:0 0,0 0,0 0}}
+    @keyframes skyShift {0%{background-position:0 0,0 0,0 0}50%{background-position:0 -7%,-5% 4%,0 0}100%{background-position:0 0,0 0,0 0}}
     .bubbles{position:fixed; inset:0; pointer-events:none; z-index:1}
     .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#fff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
     .b1{width:180px;height:180px;left:6%;top:14%;filter:blur(2px);opacity:.55}
     .b2{width:260px;height:260px;right:8%;top:8%;opacity:.45}
     .b3{width:120px;height:120px;left:18%;bottom:10%;opacity:.5}
-    @keyframes float1{0%{transform:translateY(0) rotate(0);opacity:.45}50%{transform:translateY(-18px) rotate(6deg);opacity:.65}100%{transform:translateY(0) rotate(0);opacity:.45}}
-    @keyframes float2{0%{transform:translate(0,0) rotate(0);opacity:.55}50%{transform:translate(8px,-26px) rotate(-5deg);opacity:.75}100%{transform:translate(0,0) rotate(0);opacity:.55}}
-    .bubbles i{animation:float1 10s ease-in-out infinite}
-    .bubbles .b2{animation:float2 14s ease-in-out infinite}
-    .bubbles .b3{animation:float1 12s ease-in-out -2s infinite}
+    @keyframes float1{0%{transform:translateY(0) rotate(0deg);opacity:.45}50%{transform:translateY(-38px) rotate(10deg);opacity:.75}100%{transform:translateY(0) rotate(0deg);opacity:.45}}
+    @keyframes float2{0%{transform:translate(0,0) rotate(0deg);opacity:.55}50%{transform:translate(16px,-42px) rotate(-12deg);opacity:.9}100%{transform:translate(0,0) rotate(0deg);opacity:.55}}
+    .bubbles i{animation:float1 6s ease-in-out infinite; will-change:transform,opacity}
+    .bubbles .b2{animation:float2 8s ease-in-out infinite}
+    .bubbles .b3{animation:float1 7s ease-in-out -2s infinite}
 
     header{position:sticky; top:0; z-index:3; backdrop-filter:saturate(1.4) blur(8px);
-      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35));
-      border-bottom:1px solid var(--stroke);}
-    .hdr{display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; padding:14px 16px}
-    .brand{display:flex; align-items:center; gap:10px}
-    .mark{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,#00d1ff,#00a3ff);box-shadow:var(--shadow)}
+      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35)); border-bottom:1px solid var(--stroke)}
+    .hdr{display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand .mark{width:34px; height:34px; border-radius:12px; background:linear-gradient(135deg,#00d1ff,#00a3ff); box-shadow:var(--shadow)}
+    .brand .title{font-weight:800; letter-spacing:.02em}
     .toolbar{display:flex; gap:8px}
-    .btn{border:1px solid var(--stroke);background:linear-gradient(180deg,#fff,#f6fbff);color:var(--ink);
-      padding:9px 12px;border-radius:999px;box-shadow:var(--shadow);cursor:pointer}
+    .btn{border:1px solid var(--stroke); background:linear-gradient(180deg,#fff,#f6fbff); color:var(--ink);
+      padding:10px 14px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow)}
     .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(180deg,#e6f8ff,#c9f0ff); border-color:#bde9ff}
+    .btn-danger{background:linear-gradient(180deg,#fff0f3,#ffe2e8); border-color:#ffd0da; color:#a3142e}
 
-    main{
-      padding:14px;
-      display:grid; grid-template-columns:1.25fr 1fr; gap:14px; position:relative; z-index:2;
-      height: calc(100vh - var(--hdrH)); min-height:480px;
-    }
-    @media (max-width:1200px){
-      main{grid-template-columns:1fr; height:auto; min-height:calc(100vh - var(--hdrH));}
-    }
+    main{padding:18px; position:relative; z-index:2}
+    .panel{position:relative; background:var(--glass); border:1px solid var(--stroke); border-radius:24px; padding:16px; box-shadow:var(--shadow)}
+    .panel h2{margin:0 0 10px; font-size:14px; letter-spacing:.08em; color:#194057}
+    .hint{color:var(--muted); margin:-2px 0 12px}
 
-    .panel{position:relative; background:var(--glass); border:1px solid var(--stroke);
-      border-radius:24px; padding:14px; box-shadow:var(--shadow); min-height:0;}
-    .panel h2{margin:0 0 8px; font-size:14px; letter-spacing:.08em; color:#194057}
-    .chart-box{position:relative; border:1px solid var(--stroke); border-radius:16px; padding:12px;
-      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7))}
-    .bin{position:absolute; right:16px; top:16px; padding:6px 10px; border:1px solid var(--stroke);
-      border-radius:999px; background:linear-gradient(180deg,#ffffff,#eef8ff); color:#0d4d7a; box-shadow:var(--shadow)}
-    .legend{display:flex; gap:10px; color:var(--muted); font-size:12px; margin:6px 0}
-    .legend .dot{width:10px;height:10px;border-radius:50%}
-    .legend .yes{background:var(--ok)} .legend .no{background:var(--no)}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px}
+    .card{border:1px solid var(--stroke); background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
+      border-radius:20px; overflow:hidden; cursor:pointer; transition:.2s transform,.2s box-shadow}
+    .card:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
+    .thumb{height:140px; display:grid; place-items:center; background:linear-gradient(135deg,#f2fbff,#e5f7ff)}
+    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
+    .thumb .ph{width:100%; height:100%; display:grid; place-items:center;
+      background:radial-gradient(60% 80% at 50% 30%, rgba(0,163,255,.18), transparent 60%), linear-gradient(135deg,#f2fbff,#e5f7ff);
+      color:#0a4a6a; font-size:36px; font-weight:700}
+    .body{padding:12px 14px}
+    .name{font-weight:800; font-size:15px}
+    .meta{display:flex; gap:8px; align-items:center; color:#3f6b85; font-size:12px}
+    .chip{border:1px solid var(--stroke); padding:4px 10px; border-radius:999px; background:linear-gradient(180deg,#fff,#f5fbff)}
 
-    .stat{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px}
-    .box{border:1px solid var(--stroke); border-radius:16px; padding:10px; background:linear-gradient(180deg,#fff,#f6fbff); box-shadow:var(--shadow)}
-    .label{font-size:12px; color:var(--muted)} .value{font-size:22px; font-weight:800}
-    svg,canvas{display:block; width:100%}
+    .modal{position:fixed; inset:0; display:none; place-items:center; background:linear-gradient(180deg,rgba(214,241,255,.6),rgba(214,241,255,.25)); backdrop-filter:blur(8px); z-index:4}
+    .modal.active{display:grid}
+    .dialog{width:min(780px,94vw); border:1px solid var(--stroke); background:linear-gradient(180deg,#ffffffee,#f6fbffee);
+      border-radius:28px; box-shadow:var(--shadow); overflow:hidden}
+    .head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--stroke)}
+    .head .title{font-weight:900; letter-spacing:.02em}
+    .viewer{height:min(56vh,420px); background:linear-gradient(180deg,#eefaff,#dff6ff); display:grid; place-items:center}
+    .viewer img{max-width:100%; max-height:100%; object-fit:contain; display:block}
+    .info{padding:14px 16px}
+    .actions{display:flex; gap:10px; justify-content:flex-end; padding:14px 16px; border-top:1px solid var(--stroke)}
+    .btn-yes{background:linear-gradient(180deg,#eafff4,#d8ffed); border-color:#c7f7e2; color:#055e2b}
+    .btn-no{background:linear-gradient(180deg,#fff4f5,#ffe8ec); border-color:#ffd6de; color:#8a1a2e}
 
-    #flowPanel{display:flex; flex-direction:column; min-height:0}
-    #flowChartBox{flex:1; min-height:260px}
+    .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:20px;
+      background:linear-gradient(180deg,#ffffff,#eef8ff); border:1px solid var(--stroke);
+      color:#0d1b2a; padding:10px 12px; border-radius:12px; display:none; box-shadow:var(--shadow); z-index:5}
+    .toast.show{display:block}
   </style>
-
-  <!-- Firebase & D3 -->
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
-  <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
-  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
 </head>
 <body>
   <canvas id="bgSparkle" style="position:fixed; inset:0; z-index:0; pointer-events:none;"></canvas>
   <div class="bubbles"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
 
-  <header id="hdr">
+  <header>
     <div class="hdr">
-      <div class="brand"><div class="mark"></div><div style="opacity:.9; letter-spacing:.06em; font-weight:800">Visualization Console</div></div>
+      <div class="brand"><div class="mark"></div><div class="title">THE NORM STORE – Product Selector</div></div>
       <div class="toolbar">
-        <a class="btn" href="select.html" target="_blank">📱 選択画面を開く</a>
-        <button id="btn-full" class="btn">フルスクリーン</button>
+        <a class="btn btn-primary" href="viz.html" target="_blank">📺 可視化を開く</a>
+        <button id="btn-reset" class="btn btn-danger" title="展示後にリセット">このセッションを全消去</button>
       </div>
     </div>
   </header>
 
-  <main id="main">
-    <section class="panel" id="flowPanel">
-      <h2>FLOW / YES PARTICLE FEED → FUTURE</h2>
-      <div class="chart-box" id="flowChartBox">
-        <canvas id="particles"></canvas>
-        <div class="bin">FUTURE</div>
-      </div>
-      <div class="legend"><span class="dot yes"></span> YES <span class="dot no" style="margin-left:12px"></span> NO</div>
-      <div class="stat">
-        <div class="box"><div class="label">TOTAL</div><div id="totalVotes" class="value">0</div></div>
-        <div class="box"><div class="label">YES RATE</div><div id="yesRate" class="value">0%</div></div>
-        <div class="box"><div class="label">PRODUCTS</div><div id="prodCount" class="value">0</div></div>
-      </div>
-    </section>
-
+  <main>
     <section class="panel">
-      <h2>SANKEY / PRODUCT → YES / NO → FUTURE</h2>
-      <div class="chart-box" style="height:360px"><svg id="sankey" width="100%" height="360"></svg></div>
-      <h2 style="margin:10px 0 8px">TIMELINE / PER MINUTE</h2>
-      <div class="chart-box" style="height:220px"><svg id="timeline" width="100%" height="220"></svg></div>
+      <h2>CATALOG</h2>
+      <p class="hint">製品をタップ → 画像プレビューで確認 → 出荷判断（YES / NO）</p>
+      <div id="grid" class="grid"></div>
     </section>
   </main>
 
+  <!-- Modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <div class="dialog">
+      <div class="head"><div id="modalTitle" class="title">出荷確認</div><button id="btn-close" class="btn">閉じる</button></div>
+      <div class="viewer"><img id="viewerImg" alt=""></div>
+      <div class="info">
+        <div id="modalProduct" style="font-size:18px; margin-bottom:6px">「◯◯」を未来社会へ出荷しますか？</div>
+        <div class="meta"><span class="chip" id="modalCat"></span></div>
+      </div>
+      <div class="actions">
+        <button id="answer-no" class="btn btn-no">NO / 保留</button>
+        <button id="answer-yes" class="btn btn-yes">YES / 出荷</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast">送信しました</div>
+
   <script>
-    /* ================= Firebase & Config ================= */
+    // ===== Firebase =====
     const firebaseConfig = { apiKey:"AIzaSyCDdz7o8PoUdr28-8TZhEk33SP14aWuIzs", authDomain:"thenorm-5caf7.firebaseapp.com", projectId:"thenorm-5caf7" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const votesRef = db.collection('votes');
 
-    // ★★★ 展示ごとに変更してください（select.html でも同じ値を送信すること）
+    // ★★★ viz.html と同じ値にすること ★★★
     const SESSION_ID = "20251016_shibuya_a";
 
-    // プロダクト定義（表示順はここで決まる）
+    // ===== カタログ =====
     const PRODUCTS = [
-      { id:'p1',                name:'Rable Fashion System p1',  cat:'FASHION',      file:'p1.png' },
-      { id:'fashion2',         name:'BioGlow Wear',   cat:'FASHION',  file:'fashion_2.png' },
-      { id:'imkp_fashion2',    name:'Echo Void Boots', cat:'FASHION',  file:'imkp_Fashion_2.png' },
-      { id:'imkp_fashion6',    name:'Ascent Robe', cat:'FASHION',  file:'imkp_Fashion_6.png' },
-      { id:'food1',            name:'Neutri',         cat:'FOOD',     file:'food_1.png' },
-      { id:'food2',            name:'Oyakome',         cat:'FOOD',     file:'food_2.png' },
-      { id:'imkp_food2',       name:'Healthy Fit Fast',  cat:'FOOD',     file:'imkp_Food_2.png' },
-      { id:'imkp_food3',       name:'Genfood',  cat:'FOOD',     file:'imkp_Food_3.png' },
-      { id:'edu1',             name:'C-Suite Kindergarten', cat:'EDUCATION', file:'edu_1.png' },
-      { id:'edu2',             name:'LEGENDS LIVE 2.0', cat:'EDUCATION', file:'edu_2.png' },
-      { id:'imkp_edu1',        name:'Kinokura', cat:'EDUCATION', file:'imkp_Education_1.png' },
-      { id:'imkp_edu3',        name:'Mirai', cat:'EDUCATION', file:'imkp_Education_3.png' },
-      { id:'house',            name:'Onomatopedia',            cat:'HOME',     file:'house.png' },
-      { id:'house1',           name:'BareSync',         cat:'HOME',     file:'house_1.png' },
+      { id:'p1', name:'都市スナップ p1', cat:'ART', thumb:'img/p1.png', imageUrl:'img/p1.png' },
+      { id:'fashion2', name:'ファッション 02', cat:'FASHION', thumb:'img/fashion_2.png', imageUrl:'img/fashion_2.png' },
+      { id:'imkp_fashion6', name:'ファッション 06', cat:'FASHION', thumb:'img/imkp_Fashion_6.png', imageUrl:'img/imkp_Fashion_6.png' },
+      { id:'imkp_fashion2', name:'ファッション 02 (imkp)', cat:'FASHION', thumb:'img/imkp_Fashion_2.png', imageUrl:'img/imkp_Fashion_2.png' },
+      { id:'imkp_food3', name:'フード 03 (imkp)', cat:'FOOD', thumb:'img/imkp_Food_3.png', imageUrl:'img/imkp_Food_3.png' },
+      { id:'imkp_food2', name:'フード 02 (imkp)', cat:'FOOD', thumb:'img/imkp_Food_2.png', imageUrl:'img/imkp_Food_2.png' },
+      { id:'food1', name:'フード 01', cat:'FOOD', thumb:'img/food_1.png', imageUrl:'img/food_1.png' },
+      { id:'food2', name:'フード 02', cat:'FOOD', thumb:'img/food_2.png', imageUrl:'img/food_2.png' },
+      { id:'imkp_edu3', name:'エデュケーション 03 (imkp)', cat:'EDUCATION', thumb:'img/imkp_Education_3.png', imageUrl:'img/imkp_Education_3.png' },
+      { id:'imkp_edu1', name:'エデュケーション 01 (imkp)', cat:'EDUCATION', thumb:'img/imkp_Education_1.png', imageUrl:'img/imkp_Education_1.png' },
+      { id:'edu1', name:'エデュケーション 01', cat:'EDUCATION', thumb:'img/edu_1.png', imageUrl:'img/edu_1.png' },
+      { id:'edu2', name:'エデュケーション 02', cat:'EDUCATION', thumb:'img/edu_2.png', imageUrl:'img/edu_2.png' },
+      { id:'house1', name:'ハウス 01', cat:'HOME', thumb:'img/house_1.png', imageUrl:'img/house_1.png' },
+      { id:'house', name:'ハウス', cat:'HOME', thumb:'img/house.png', imageUrl:'img/house.png' },
     ];
 
-    /* ================= 背景スパークル ================= */
+    const $grid = document.getElementById('grid');
+    function placeholderSVG(text){
+      const label = (text||'').slice(0,8);
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop stop-color="#f2fbff" offset="0"/><stop stop-color="#e5f7ff" offset="1"/></linearGradient></defs>
+        <rect width="100%" height="100%" fill="url(#g)"/>
+        <text x="50%" y="52%" font-family="system-ui,Segoe UI,Roboto,Noto Sans JP,sans-serif" font-size="56" font-weight="700" fill="#0a4a6a" text-anchor="middle">${label}</text>
+      </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    }
+    function renderGrid(){
+      $grid.innerHTML = PRODUCTS.map(p=>{
+        const thumb = p.thumb || placeholderSVG(p.name);
+        return `<article class="card" data-id="${p.id}">
+          <div class="thumb"><img data-id="${p.id}" data-name="${p.name}" src="${thumb}" alt="${p.name}" loading="lazy"></div>
+          <div class="body"><div class="name">${p.name}</div><div class="meta"><span class="chip">${p.cat}</span></div></div>
+        </article>`;
+      }).join('');
+      $grid.querySelectorAll('.card').forEach(el=>{
+        el.addEventListener('click', ()=>{
+          const id = el.getAttribute('data-id');
+          openModal(PRODUCTS.find(x=>x.id===id));
+        });
+      });
+      $grid.querySelectorAll('img[data-id]').forEach(img=>{
+        img.onerror = ()=>{ img.src = placeholderSVG(img.getAttribute('data-name')||''); };
+      });
+    }
+
+    const $modal = document.getElementById('modal');
+    const $modalTitle = document.getElementById('modalTitle');
+    const $modalProduct = document.getElementById('modalProduct');
+    const $modalCat = document.getElementById('modalCat');
+    const $viewerImg = document.getElementById('viewerImg');
+
+    function openModal(p){
+      window.__current = p;
+      $modalTitle.textContent = p.name;
+      $modalProduct.textContent = `「${p.name}」を未来社会へ出荷しますか？`;
+      $modalCat.textContent = p.cat;
+      const src = p.imageUrl || p.thumb || placeholderSVG(p.name);
+      $viewerImg.onerror = ()=>{ $viewerImg.src = placeholderSVG(p.name); };
+      $viewerImg.src = src; $viewerImg.alt = p.name;
+      $modal.classList.add('active');
+    }
+    function closeModal(){ $modal.classList.remove('active'); window.__current=null; }
+    document.getElementById('btn-close').addEventListener('click', closeModal);
+    $modal.addEventListener('click', e=>{ if(e.target===$modal) closeModal(); });
+
+    document.getElementById('answer-yes').addEventListener('click', ()=> handle('yes'));
+    document.getElementById('answer-no').addEventListener('click', ()=> handle('no'));
+    async function handle(answer){
+      if(!window.__current) return;
+      try{
+        await votesRef.add({
+          productId: window.__current.id,
+          productName: window.__current.name, // 予備：可視化側でも使えます
+          answer, session: SESSION_ID,
+          ts: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        toast('送信しました');
+      }catch(e){ toast('送信エラー: '+ e.message); }
+      closeModal();
+    }
+
+    // このセッションだけ全削除
+    document.getElementById('btn-reset').addEventListener('click', async ()=>{
+      if(!confirm('このセッションの votes を全削除します。よろしいですか？')) return;
+      const snap = await votesRef.where('session','==',SESSION_ID).get();
+      const batch = db.batch(); snap.forEach(doc=> batch.delete(doc.ref));
+      await batch.commit(); toast('削除しました');
+    });
+
+    function toast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),1200);
+    }
+
+    // 背景スパークル
     (function sparkle(){
       const c = document.getElementById('bgSparkle'); if(!c) return;
-      const ctx = c.getContext('2d', { alpha:true });
+      const ctx = c.getContext('2d', { alpha: true });
       let w,h,dpr=Math.min(2, window.devicePixelRatio||1);
-      const N=60, ps=[];
+      const N = 90, ps = [];
       function resize(){ w=c.clientWidth; h=c.clientHeight; c.width=w*dpr; c.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0) }
       new ResizeObserver(resize).observe(document.body); resize();
-      for(let i=0;i<N;i++){ ps.push({x:Math.random()*w,y:Math.random()*h,r:.8+Math.random()*1.6,a:.35+Math.random()*.25,vx:(-0.2+Math.random()*.4),vy:(-0.2+Math.random()*.4)}) }
+      for(let i=0;i<N;i++) ps.push({x:Math.random()*w,y:Math.random()*h,r:.8+Math.random()*1.6,a:.35+Math.random()*.25,vx:(-0.2+Math.random()*.9),vy:(-0.2+Math.random()*.9)});
       (function tick(){
         ctx.clearRect(0,0,w,h);
         const grd=ctx.createRadialGradient(w*0.7,h*0.2,0,w*0.7,h*0.2,Math.max(w,h)*0.8);
-        grd.addColorStop(0,'rgba(255,255,255,0.08)'); grd.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
+        grd.addColorStop(0,'rgba(255,255,255,0.08)'); grd.addColorStop(1,'rgba(255,255,255,0)'); ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
         for(const p of ps){
-          p.x+=p.vx; p.y+=p.vy;
-          if(p.x<-10) p.x=w+10; if(p.x>w+10) p.x=-10;
-          if(p.y<-10) p.y=h+10; if(p.y>h+10) p.y=-10;
-          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-          ctx.fillStyle=`rgba(0,163,255,${p.a})`; ctx.fill();
-          p.a += (Math.random()-0.5)*0.01; p.a=Math.max(0.15,Math.min(0.5,p.a));
+          p.x+=p.vx; p.y+=p.vy; if(p.x<-10)p.x=w+10; if(p.x>w+10)p.x=-10; if(p.y<-10)p.y=h+10; if(p.y>h+10)p.y=-10;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(0,163,255,${p.a})`; ctx.fill();
+          p.a += (Math.random()-0.5)*0.02; p.a=Math.max(0.10,Math.min(0.8,p.a));
         }
         requestAnimationFrame(tick);
       })();
     })();
 
-    /* ================= 可視化：粒子 ================= */
-    const pCanvas = document.getElementById('particles');
-    const pCtx = pCanvas.getContext('2d');
-
-    const PARAM = {
-      IDLE_SPAWN_PER_SEC: 6,
-      IDLE_BASE_SPEED: 1.2,
-      IDLE_MAX: 220,
-      DRIZZLE_EVERY_SEC: 8,
-      DRIZZLE_COUNT: 8,
-      FUTURE_PULSE_STRENGTH: .12,
-      YES_BASE_R: 3.0,
-      YES_BURST_R_MIN: 5.0,
-      YES_BURST_R_MAX: 7.5,
-      YES_FLASH_MS: 450,
-      TRAIL_LENGTH: 12,
-      TRAIL_FADE: 0.08
-    };
-
-    let particles = [], idleParticles = [];
-    let lastIdleSpawn = 0, lastDrizzle = 0;
-
-    function spawnYesParticles(n){
-      const h = pCanvas.height;
-      for(let i=0;i<n;i++){
-        particles.push({ x:-20, y:40+Math.random()*(h-80),
-          vx:2.0+Math.random()*3.0, vy:(Math.random()-.5)*1.0,
-          life:220+Math.random()*100, r:PARAM.YES_BASE_R,
-          col:'rgba(53,201,135,0.95)', burst:false, born:performance.now(), trail:[] });
-      }
-    }
-    function spawnYesBurst(k){
-      const h = pCanvas.height;
-      for(let i=0;i<k;i++){
-        particles.push({ x:-30, y:40+Math.random()*(h-80),
-          vx:2.4+Math.random()*3.2, vy:(Math.random()-.5)*1.2,
-          life:260+Math.random()*120,
-          r:PARAM.YES_BURST_R_MIN+Math.random()*(PARAM.YES_BURST_R_MAX-PARAM.YES_BURST_R_MIN),
-          col:'rgba(255,255,255,1)', burst:true, born:performance.now(), trail:[] });
-      }
-    }
-    function spawnIdle(k){
-      const h = pCanvas.height;
-      for(let i=0;i<k;i++){
-        idleParticles.push({ x:Math.random()*pCanvas.width*0.6, y:20+Math.random()*(h-40),
-          vx:PARAM.IDLE_BASE_SPEED*(0.6+Math.random()*0.8), vy:(Math.random()-.5)*0.4,
-          r:1.4+Math.random()*1.2, life:800+Math.random()*400 });
-      }
-      if(idleParticles.length>PARAM.IDLE_MAX) idleParticles.splice(0, idleParticles.length-PARAM.IDLE_MAX);
-    }
-
-    function drawFlowGrid(w,h){
-      pCtx.strokeStyle='rgba(13,27,42,0.06)';
-      for(let y=0;y<=h;y+=40){ pCtx.beginPath(); pCtx.moveTo(0,y+.5); pCtx.lineTo(w,y+.5); pCtx.stroke(); }
-    }
-    function drawFutureBin(w,h, now){
-      const fx=w-120, fy=40, fw=100, fh=h-80;
-      const pulse=(Math.sin(now/900)+1)/2*PARAM.FUTURE_PULSE_STRENGTH;
-      pCtx.fillStyle=`rgba(0,163,255,${0.06+pulse})`; pCtx.fillRect(fx,fy,fw,fh);
-      const grad=pCtx.createLinearGradient(fx,0,fx+fw,0);
-      grad.addColorStop(0,'rgba(255,255,255,0)');
-      grad.addColorStop(0.5,`rgba(255,255,255,${0.10+pulse})`);
-      grad.addColorStop(1,'rgba(255,255,255,0)');
-      pCtx.fillStyle=grad; pCtx.fillRect(fx,fy,fw,fh);
-      return {fx,fy,fw,fh};
-    }
-    function flowNoise(w,h, now){
-      pCtx.save(); pCtx.globalAlpha=0.08; pCtx.lineWidth=1; pCtx.strokeStyle='rgba(25,64,87,0.35)';
-      for(let i=0;i<8;i++){
-        const y=(now/40+i*22)%(h-60)+30;
-        pCtx.beginPath(); pCtx.moveTo(10,y);
-        pCtx.quadraticCurveTo(w*0.35, y+Math.sin((now+i*300)/700)*8, w-140, y+Math.cos((now+i*150)/900)*10);
-        pCtx.stroke();
-      }
-      pCtx.restore();
-    }
-
-    function tick(){
-      const w=pCanvas.width, h=pCanvas.height, now=performance.now();
-      pCtx.clearRect(0,0,w,h);
-      drawFlowGrid(w,h);
-      const bin=drawFutureBin(w,h,now);
-      flowNoise(w,h,now);
-
-      if(now-lastIdleSpawn>1000){ spawnIdle(PARAM.IDLE_SPAWN_PER_SEC); lastIdleSpawn=now; }
-      if(now-lastDrizzle>PARAM.DRIZZLE_EVERY_SEC*1000){ spawnYesParticles(PARAM.DRIZZLE_COUNT); lastDrizzle=now; }
-
-      for(let i=idleParticles.length-1;i>=0;i--){
-        const p=idleParticles[i], ax=(bin.fx-p.x)/50000, ay=((bin.fy+bin.fh/2)-p.y)/80000;
-        p.vx+=ax; p.vy+=ay; p.x+=p.vx; p.y+=p.vy; p.life--;
-        pCtx.fillStyle='rgba(0,163,255,0.55)'; pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r,0,Math.PI*2); pCtx.fill();
-        if(p.x>bin.fx+bin.fw||p.y<0||p.y>h||p.life<=0) idleParticles.splice(i,1);
-      }
-
-      for(let i=particles.length-1;i>=0;i--){
-        const pt=particles[i], ax=(bin.fx-pt.x)/900, ay=((bin.fy+bin.fh/2)-pt.y)/1200;
-        pt.vx+=ax; pt.vy+=ay; pt.x+=pt.vx; pt.y+=pt.vy; pt.life--;
-        pt.trail.unshift({x:pt.x,y:pt.y}); if(pt.trail.length>PARAM.TRAIL_LENGTH) pt.trail.pop();
-
-        pCtx.save(); pCtx.globalCompositeOperation='lighter';
-        for(let t=0;t<pt.trail.length;t++){
-          const f=(1-t/pt.trail.length)*(pt.burst?0.9:0.6);
-          pCtx.fillStyle=`rgba(53,201,135,${f*PARAM.TRAIL_FADE*(pt.burst?2.0:1.0)})`;
-          const tr=Math.max(0.8, pt.r*(0.9-t/pt.trail.length*0.6));
-          pCtx.beginPath(); pCtx.arc(pt.trail[t].x, pt.trail[t].y, tr, 0, Math.PI*2); pCtx.fill();
-        }
-        pCtx.restore();
-
-        const age=performance.now()-pt.born;
-        if(age<PARAM.YES_FLASH_MS){
-          const k=1-age/PARAM.YES_FLASH_MS;
-          pCtx.save(); pCtx.globalAlpha=0.25*k*(pt.burst?1.3:1.0);
-          pCtx.beginPath(); pCtx.arc(pt.x,pt.y,pt.r*(2.4-1.2*k),0,Math.PI*2);
-          pCtx.fillStyle='rgba(255,255,255,1)'; pCtx.fill(); pCtx.restore();
-        }
-
-        pCtx.fillStyle = pt.burst? 'rgba(255,255,255,0.95)' : pt.col;
-        pCtx.beginPath(); pCtx.arc(pt.x,pt.y,pt.r,0,Math.PI*2); pCtx.fill();
-
-        if(pt.x>bin.fx+bin.fw||pt.life<=0) particles.splice(i,1);
-      }
-      requestAnimationFrame(tick);
-    }
-
-    /* ================= Sankey & Timeline ================= */
-    const sankeySvg = d3.select('#sankey');
-    function drawSankey(votes){
-      const bbox = sankeySvg.node().getBoundingClientRect(); const W=bbox.width, H=bbox.height;
-      sankeySvg.selectAll('*').remove();
-
-      const S = d3.sankey().nodeWidth(12).nodePadding(12).extent([[10,10],[W-10,H-10]]);
-      const nodes=[], idx=new Map(); const add=n=>{ if(!idx.has(n)){ idx.set(n,nodes.length); nodes.push({name:n}); } return idx.get(n); };
-
-      PRODUCTS.forEach(p=>add(p.name)); add('Yes'); add('No'); add('Future');
-
-      const links=[];
-      PRODUCTS.forEach(p=>{
-        const pv=votes.filter(v=>v.productId===p.id);
-        const y=pv.filter(v=>isYes(v)).length; const n=pv.filter(v=>!isYes(v)).length;
-        if(y>0) links.push({source:add(p.name), target:add('Yes'), value:y});
-        if(n>0) links.push({source:add(p.name), target:add('No'),  value:n});
-      });
-      const totalYes=votes.filter(isYes).length;
-      if(totalYes>0) links.push({source:add('Yes'), target:add('Future'), value:totalYes});
-
-      const g=S({nodes:nodes.map(d=>({...d})), links:links.map(d=>({...d}))});
-
-      sankeySvg.append('g').selectAll('path').data(g.links).enter().append('path')
-        .attr('d', d3.sankeyLinkHorizontal()).attr('fill','none')
-        .attr('stroke', d=> d.target.name==='No' ? getComputedStyle(document.documentElement).getPropertyValue('--no') : getComputedStyle(document.documentElement).getPropertyValue('--ok'))
-        .attr('stroke-opacity', .55).attr('stroke-width', d=>Math.max(1,d.width));
-
-      const node = sankeySvg.append('g').selectAll('g').data(g.nodes).enter().append('g');
-      node.append('rect').attr('x',d=>d.x0).attr('y',d=>d.y0).attr('height',d=>Math.max(1,d.y1-d.y0)).attr('width',d=>d.x1-d.x0)
-        .attr('fill', d=>{
-          if(d.name==='No') return getComputedStyle(document.documentElement).getPropertyValue('--no');
-          if(d.name==='Yes') return getComputedStyle(document.documentElement).getPropertyValue('--ok');
-          if(d.name==='Future') return getComputedStyle(document.documentElement).getPropertyValue('--future');
-          return '#9bd7ff';
-        }).attr('opacity', .9).attr('stroke', '#bfe7ff');
-      node.append('text').attr('x',d=> d.x0<W/2? d.x1+6: d.x0-6).attr('y',d=> (d.y1+d.y0)/2).attr('dy','0.35em')
-        .attr('text-anchor',d=> d.x0<W/2?'start':'end').text(d=>d.name).attr('fill','#194057').style('font','12px system-ui');
-    }
-
-    const tlSvg = d3.select('#timeline');
-    function drawTimeline(votes){
-      const bbox = tlSvg.node().getBoundingClientRect(); const W=bbox.width, H=bbox.height;
-      tlSvg.selectAll('*').remove(); if(votes.length===0) return;
-      const key = (d)=>{ const t=d.ts?.toDate? d.ts.toDate(): new Date(); t.setSeconds(0,0); return +t; };
-      const groups = d3.rollup(votes, vv=>({yes: vv.filter(d=>isYes(d)).length, no: vv.filter(d=>!isYes(d)).length}), key);
-      const data = Array.from(groups, ([k,v])=>({t:+k, yes:v.yes, no:v.no})).sort((a,b)=>a.t-b.t);
-
-      const x = d3.scaleBand().domain(data.map(d=>d.t)).range([40, W-10]).padding(.2);
-      const y = d3.scaleLinear().domain([0, d3.max(data,d=>d.yes+d.no)||1]).nice().range([H-30, 10]);
-
-      const axis = d3.axisBottom(d3.scaleTime().domain(d3.extent(data,d=>new Date(d.t))).range([40, W-10])).ticks(5);
-      tlSvg.append('g').attr('transform',`translate(0,${H-28})`).call(axis).selectAll('text').attr('fill', '#4f6b83');
-      tlSvg.append('g').call(d3.axisLeft(y).ticks(4)).selectAll('text').attr('fill', '#4f6b83');
-
-      tlSvg.selectAll('.bar-no').data(data).enter().append('rect')
-        .attr('x',d=>x(d.t)).attr('y',d=>y(d.no)).attr('width',x.bandwidth()).attr('height',d=>y(0)-y(d.no))
-        .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--no')).attr('opacity', .85);
-      tlSvg.selectAll('.bar-yes').data(data).enter().append('rect')
-        .attr('x',d=>x(d.t)).attr('y',d=>y(d.no+d.yes)).attr('width',x.bandwidth()).attr('height',d=>y(d.no)-y(d.no+d.yes))
-        .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--ok')).attr('opacity', .95);
-    }
-
-    /* ================= YES判定 / サブスクライブ ================= */
-    function isYes(v){
-      const a=v?.answer;
-      if(typeof a==='string') return a.trim().toLowerCase()==='yes';
-      if(typeof a==='boolean') return a===true;
-      return false;
-    }
-
-    function updateStats(votes){
-      const total=votes.length, yes=votes.filter(isYes).length;
-      document.getElementById('totalVotes').textContent=total;
-      document.getElementById('yesRate').textContent= total? Math.round((yes/total)*100)+'%' : '0%';
-      document.getElementById('prodCount').textContent=PRODUCTS.length;
-    }
-    function onData(votes){
-      drawSankey(votes); drawTimeline(votes); updateStats(votes);
-    }
-
-    function subscribe(){
-      let initial=true;
-      votesRef
-        .where('session','==',SESSION_ID)   // ★ セッションで絞り込み
-        .orderBy('ts','asc')
-        .onSnapshot(snap=>{
-          const votes=[]; snap.forEach(doc=> votes.push(doc.data()));
-          onData(votes);
-
-          if(initial){ initial=false; return; }
-          snap.docChanges().forEach(ch=>{
-            if(ch.type==='added'){
-              const v=ch.doc.data();
-              if(isYes(v)){ spawnYesBurst(6); spawnYesParticles(10); }
-            }
-          });
-        });
-    }
-
-    /* ================= レイアウト起動 ================= */
-    function setHeaderHeightVar(){
-      const hdr=document.getElementById('hdr'); if(!hdr) return;
-      document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px');
-    }
-    function fit(){
-      const box=document.getElementById('flowChartBox');
-      const c=document.getElementById('particles'); if(!box||!c) return;
-      const style=getComputedStyle(box);
-      const padX=parseFloat(style.paddingLeft)+parseFloat(style.paddingRight);
-      const padY=parseFloat(style.paddingTop)+parseFloat(style.paddingBottom);
-      const w=Math.max(900, box.clientWidth-padX);
-      const h=Math.max(260, box.clientHeight-padY);
-      c.width=w; c.height=h;
-    }
-    new ResizeObserver(()=>{ setHeaderHeightVar(); fit(); }).observe(document.body);
-    new ResizeObserver(()=>{ fit(); }).observe(document.getElementById('flowChartBox'));
-
-    setHeaderHeightVar(); fit(); subscribe(); tick();
-
-    document.getElementById('btn-full').addEventListener('click',()=>{
-      const el=document.documentElement;
-      if(!document.fullscreenElement){ el.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
-    });
-
-    (function bubblesFX(){
-      const root=document.querySelector('.bubbles'); if(!root) return;
-      const nodes=Array.from(root.querySelectorAll('i'));
-      nodes.forEach((el,i)=>{ const dur=10+i*2+Math.random()*4; const delay=(-i)+(Math.random()*-2); el.style.animationDuration=`${dur}s`; el.style.animationDelay=`${delay}s`; });
-      let tx=0,ty=0,cx=0,cy=0; const lerp=(a,b,t)=>a+(b-a)*t;
-      function onMove(x,y){ const W=innerWidth,H=innerHeight; tx=(x/W-.5)*16; ty=(y/H-.5)*12; }
-      addEventListener('mousemove',e=>onMove(e.clientX,e.clientY),{passive:true});
-      addEventListener('touchmove',e=>{const t=e.touches[0]; if(t) onMove(t.clientX,t.clientY);},{passive:true});
-      (function loop(){ cx=lerp(cx,tx,.06); cy=lerp(cy,ty,.06); root.style.transform=`translate3d(${cx}px,${cy}px,0)`; requestAnimationFrame(loop); })();
-    })();
+    renderGrid();
   </script>
 </body>
 </html>
