@@ -319,17 +319,40 @@
       $modalTitle.textContent = '出荷確認';
       $modalProduct.textContent = `「${title}」を未来社会へ出荷しますか？`;
 
-      // largeは .png を優先（拡張子違いの可能性にも一応対応）
-      const tryLargeSame = PATH.LARGE_1 + p.file;
-      const tryLargePng  = PATH.LARGE_1 + swapExt(p.file,'png');
-      const tryImgSame   = PATH.LARGE_2 + p.file;
-      const tryThumbSame = PATH.THUMB_2 + p.file;
+  const base = p.file; // 例: imkp_Food_3.png
+      // 同名&拡張子バリエーション（大小文字もケア）
+  const exts = [
+      base,
+      base.replace(/\.[^.]+$/, '.png'),
+      base.replace(/\.[^.]+$/, '.PNG'),
+      base.replace(/\.[^.]+$/, '.jpg'),
+      base.replace(/\.[^.]+$/, '.JPG'),
+      base.replace(/\.[^.]+$/, '.jpeg'),
+      base.replace(/\.[^.]+$/, '.JPEG'),
+  ];
 
-      setImgWithFallback($viewerImg, [tryLargeSame, tryLargePng, tryImgSame, tryThumbSame, placeholderSVG(title)]);
+  // 上から順に試す（large → img/ → ★thumb/）
+  const candidates = [
+    ...exts.map(x => PATH.LARGE_1 + x),
+    ...exts.map(x => PATH.LARGE_2 + x),
+    ...exts.map(x => PATH.THUMB_1 + x),  // ← これが抜けていた
+    ...exts.map(x => PATH.THUMB_2 + x),
+  ];
 
-      $modal.classList.add('active');
-      window.__current = p;
-    }
+  function setImgWithFallback(imgEl, urls){
+  // ローディング中に仮プレースホルダを先に出してチラつき回避
+  imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="30"><rect width="100%" height="100%" fill="#eef5ff"/></svg>');
+  let i = 0;
+  function tryNext(){
+    if(i >= urls.length){ imgEl.src = placeholderSVG('NO IMAGE'); return; }
+    const url = urls[i++];
+    const test = new Image();
+    test.onload  = ()=>{ imgEl.src = url; };
+    test.onerror = tryNext;
+    test.src = url;
+  }
+  tryNext();
+}
     function closeModal(){ $modal.classList.remove('active'); window.__current=null; }
     document.getElementById('btn-close').addEventListener('click', closeModal);
     $modal.addEventListener('click', e=>{ if(e.target === $modal) closeModal(); });
