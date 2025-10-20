@@ -32,6 +32,9 @@
     .b3{width:120px; height:120px; left:18%; bottom:10%; opacity:.5}
     @keyframes float1 { 0%{transform:translateY(0) rotate(0);opacity:.45} 50%{transform:translateY(-38px) rotate(10deg);opacity:.75} 100%{transform:translateY(0) rotate(0);opacity:.45} }
     @keyframes float2 { 0%{transform:translate(0,0) rotate(0);opacity:.55} 50%{transform:translate(16px,-42px) rotate(-12deg);opacity:.9} 100%{transform:translate(0,0) rotate(0);opacity:.55} }
+    .bubbles i{animation:float1 6s ease-in-out infinite; will-change:transform,opacity}
+    .bubbles .b2{animation:float2 8s ease-in-out infinite}
+    .bubbles .b3{animation:float1 7s ease-in-out -2s infinite}
 
     header{
       position:sticky; top:0; z-index:3; backdrop-filter:saturate(1.4) blur(8px);
@@ -208,9 +211,7 @@
     const db = firebase.firestore();
     const votesRef = db.collection('votes');
 
-    /* ==== 画像リスト（★ファイル名をそのまま表示名にします） ==== */
-    // 添付の画像ファイル名に合わせて、この配列の中身（文字列）を必要分だけ列挙してください。
-    // 例: 'imkp_Food_3.png' → カード名/モーダル名ともに「imkp_Food_3.png」で表示されます。
+    /* ==== 画像ファイル名のリスト（表示名＝ファイル名） ==== */
     const FILES = [
       'p1.png',
       'fashion_2.png',
@@ -228,26 +229,8 @@
       'house_1.png',
     ];
 
-    /* ==== 補助：拡張子やベース名 ==== */
+    /* ==== ユーティリティ ==== */
     function stem(file){ return (file||'').replace(/^.*\//,''); }           // パス除去
-    function ext(file){ return (file||'').split('.').pop().toLowerCase(); } // 拡張子
-    function swapExt(file, newExt){ return file.replace(/\.[^.]+$/, '.'+newExt); }
-
-    /* ==== 画像セット：フォールバック順で差し替え ==== */
-    function setImgWithFallback(imgEl, urls){
-      let i = 0;
-      function tryNext(){
-        if(i >= urls.length){ imgEl.src = placeholderSVG('NO IMAGE'); return; }
-        const url = urls[i++];
-        const test = new Image();
-        test.onload = ()=>{ imgEl.src = url; };
-        test.onerror = tryNext;
-        test.src = url;
-      }
-      tryNext();
-    }
-
-    /* ==== プレースホルダSVG ==== */
     function placeholderSVG(text){
       const label = (text || '').slice(0,16);
       const svg = `
@@ -262,21 +245,33 @@
       return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }
 
+    /* ==== 画像セット（フォールバック） ==== */
+    function setImgWithFallback(imgEl, urls){
+      // ローディング中の仮プレースホルダでチラつきを抑える
+      imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="30"><rect width="100%" height="100%" fill="#eef5ff"/></svg>');
+      let i = 0;
+      function tryNext(){
+        if(i >= urls.length){ imgEl.src = placeholderSVG('NO IMAGE'); return; }
+        const url = urls[i++];
+        const test = new Image();
+        test.onload  = ()=>{ imgEl.src = url; };
+        test.onerror = tryNext;
+        test.src = url;
+      }
+      tryNext();
+    }
+
     /* ==== PRODUCTS をファイル名から生成（表示名＝ファイル名） ==== */
     const PRODUCTS = FILES.map(file => {
-      const filename = stem(file); // パスを除去して純粋なファイル名
-      return {
-        id: filename,           // IDもファイル名にしておくと整合が取れる
-        file: filename,         // 表示名の元
-        name: filename,         // ★ 表示名＝ファイル名（拡張子込み）
-      };
+      const filename = stem(file);
+      return { id: filename, file: filename, name: filename };
     });
 
     /* ==== グリッド描画 ==== */
     const $grid = document.getElementById('grid');
     function renderGrid(){
       $grid.innerHTML = PRODUCTS.map(p=>{
-        const title = p.name; // ファイル名そのまま
+        const title = p.name;
         return `
           <article class="card" data-id="${p.id}">
             <div class="thumb">
@@ -292,10 +287,7 @@
       $grid.querySelectorAll('.thumb img').forEach(img=>{
         const id = img.getAttribute('data-id');
         const p = PRODUCTS.find(x=>x.id===id);
-        const urls = [
-          PATH.THUMB_1 + p.file,
-          PATH.THUMB_2 + p.file,
-        ];
+        const urls = [ PATH.THUMB_1 + p.file, PATH.THUMB_2 + p.file ];
         setImgWithFallback(img, urls);
       });
 
@@ -319,45 +311,30 @@
       $modalTitle.textContent = '出荷確認';
       $modalProduct.textContent = `「${title}」を未来社会へ出荷しますか？`;
 
-  const base = p.file; // 例: imkp_Food_3.png
-      // 同名&拡張子バリエーション（大小文字もケア）
-  const exts = [
-      base,
-      base.replace(/\.[^.]+$/, '.png'),
-      base.replace(/\.[^.]+$/, '.PNG'),
-      base.replace(/\.[^.]+$/, '.jpg'),
-      base.replace(/\.[^.]+$/, '.JPG'),
-      base.replace(/\.[^.]+$/, '.jpeg'),
-      base.replace(/\.[^.]+$/, '.JPEG'),
-  ];
+      // 拡張子バリエーション（大小文字ゆれもケア）
+      const exts = [
+        p.file,
+        p.file.replace(/\.[^.]+$/, '.png'),
+        p.file.replace(/\.[^.]+$/, '.PNG'),
+        p.file.replace(/\.[^.]+$/, '.jpg'),
+        p.file.replace(/\.[^.]+$/, '.JPG'),
+        p.file.replace(/\.[^.]+$/, '.jpeg'),
+        p.file.replace(/\.[^.]+$/, '.JPEG'),
+      ];
 
-  // 上から順に試す（large → img/ → ★thumb/）
-  const candidates = [
-    ...exts.map(x => PATH.LARGE_1 + x),
-    ...exts.map(x => PATH.LARGE_2 + x),
-    ...exts.map(x => PATH.THUMB_1 + x),  // ← これが抜けていた
-    ...exts.map(x => PATH.THUMB_2 + x),
-  ];
- }
+      // フォールバック順：large → img/ → thumb/
+      const candidates = [
+        ...exts.map(x => PATH.LARGE_1 + x),
+        ...exts.map(x => PATH.LARGE_2 + x),
+        ...exts.map(x => PATH.THUMB_1 + x),
+        ...exts.map(x => PATH.THUMB_2 + x),
+      ];
 
-  setImgWithFallback($viewerImg, candidates);
-  $modal.classList.add('active');
-  window.__current = p;
+      setImgWithFallback($viewerImg, candidates);
+      $modal.classList.add('active');
+      window.__current = p;
+    }
 
-  function setImgWithFallback(imgEl, urls){
-  // ローディング中に仮プレースホルダを先に出してチラつき回避
-  imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="30"><rect width="100%" height="100%" fill="#eef5ff"/></svg>');
-  let i = 0;
-  function tryNext(){
-    if(i >= urls.length){ imgEl.src = placeholderSVG('NO IMAGE'); return; }
-    const url = urls[i++];
-    const test = new Image();
-    test.onload  = ()=>{ imgEl.src = url; };
-    test.onerror = tryNext;
-    test.src = url;
-  }
-  tryNext();
-}
     function closeModal(){ $modal.classList.remove('active'); window.__current=null; }
     document.getElementById('btn-close').addEventListener('click', closeModal);
     $modal.addEventListener('click', e=>{ if(e.target === $modal) closeModal(); });
@@ -387,7 +364,7 @@
       try{
         await votesRef.add({
           productId: window.__current.id,
-          fileName: window.__current.file, // どの画像かが明確
+          fileName: window.__current.file,
           answer,
           ts: firebase.firestore.FieldValue.serverTimestamp()
         });
