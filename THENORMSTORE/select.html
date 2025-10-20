@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Future Line | Product Selector (2D + Animated BG)</title>
+  <title>THE NORM STORE – Product Selector</title>
   <style>
     :root{
+      --thumb-ratio: 4/3; /* サムネ比率：正方形にしたい場合は 1/1 */
       --bg1:#eaf6ff; --bg2:#cfefff; --bg3:#bfe7ff;
       --glass:#ffffffcc; --stroke:#e1f0f8; --ink:#0d1b2a; --muted:#4f6b83;
-      --primary:#00a3ff; --accent:#4ce078; --danger:#ff5a7a;
       --shadow: 0 10px 30px rgba(13,27,42,.12), 0 2px 8px rgba(13,27,42,.06);
     }
     *{box-sizing:border-box}
@@ -19,25 +19,25 @@
         radial-gradient(1200px 700px at 80% -10%, #ffffff 0%, transparent 60%),
         radial-gradient(1800px 900px at -10% 10%, var(--bg1) 0%, transparent 55%),
         linear-gradient(180deg, var(--bg2), var(--bg3));
-      background-size:auto,auto,100% 100%;
       animation: skyShift 18s ease-in-out infinite;
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
-    @keyframes skyShift {0%{background-position:0 0,0 0,0 0}50%{background-position:0 -7%,-5% 4%,0 0}100%{background-position:0 0,0 0,0 0}}
+    @keyframes skyShift { 0%{background-position:0 0,0 0,0 0} 50%{background-position:0 -7%,-5% 4%,0 0} 100%{background-position:0 0,0 0,0 0} }
+
     .bubbles{position:fixed; inset:0; pointer-events:none; z-index:1}
     .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#fff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
-    .b1{width:180px;height:180px;left:6%;top:14%;filter:blur(2px);opacity:.55}
-    .b2{width:260px;height:260px;right:8%;top:8%;opacity:.45}
-    .b3{width:120px;height:120px;left:18%;bottom:10%;opacity:.5}
-    @keyframes float1{0%{transform:translateY(0) rotate(0deg);opacity:.45}50%{transform:translateY(-38px) rotate(10deg);opacity:.75}100%{transform:translateY(0) rotate(0deg);opacity:.45}}
-    @keyframes float2{0%{transform:translate(0,0) rotate(0deg);opacity:.55}50%{transform:translate(16px,-42px) rotate(-12deg);opacity:.9}100%{transform:translate(0,0) rotate(0deg);opacity:.55}}
-    .bubbles i{animation:float1 6s ease-in-out infinite; will-change:transform,opacity}
-    .bubbles .b2{animation:float2 8s ease-in-out infinite}
-    .bubbles .b3{animation:float1 7s ease-in-out -2s infinite}
+    .b1{width:180px; height:180px; left:6%; top:14%; filter:blur(2px); opacity:.55}
+    .b2{width:260px; height:260px; right:8%; top:8%; opacity:.45}
+    .b3{width:120px; height:120px; left:18%; bottom:10%; opacity:.5}
+    @keyframes float1 { 0%{transform:translateY(0) rotate(0);opacity:.45} 50%{transform:translateY(-38px) rotate(10deg);opacity:.75} 100%{transform:translateY(0) rotate(0);opacity:.45} }
+    @keyframes float2 { 0%{transform:translate(0,0) rotate(0);opacity:.55} 50%{transform:translate(16px,-42px) rotate(-12deg);opacity:.9} 100%{transform:translate(0,0) rotate(0);opacity:.55} }
 
-    header{position:sticky; top:0; z-index:3; backdrop-filter:saturate(1.4) blur(8px);
-      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35)); border-bottom:1px solid var(--stroke)}
+    header{
+      position:sticky; top:0; z-index:3; backdrop-filter:saturate(1.4) blur(8px);
+      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35));
+      border-bottom:1px solid var(--stroke);
+    }
     .hdr{display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px}
     .brand{display:flex; align-items:center; gap:12px}
     .brand .mark{width:34px; height:34px; border-radius:12px; background:linear-gradient(135deg,#00d1ff,#00a3ff); box-shadow:var(--shadow)}
@@ -55,37 +55,100 @@
     .hint{color:var(--muted); margin:-2px 0 12px}
 
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px}
-    .card{border:1px solid var(--stroke); background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
-      border-radius:20px; overflow:hidden; cursor:pointer; transition:.2s transform,.2s box-shadow}
+    .card{
+      display:flex; flex-direction:column;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
+      border-radius:20px; overflow:hidden; cursor:pointer; transition:.2s transform,.2s box-shadow;
+      min-height:240px;
+    }
     .card:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
-    .thumb{height:140px; display:grid; place-items:center; background:linear-gradient(135deg,#f2fbff,#e5f7ff)}
-    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
-    .thumb .ph{width:100%; height:100%; display:grid; place-items:center;
-      background:radial-gradient(60% 80% at 50% 30%, rgba(0,163,255,.18), transparent 60%), linear-gradient(135deg,#f2fbff,#e5f7ff);
-      color:#0a4a6a; font-size:36px; font-weight:700}
-    .body{padding:12px 14px}
-    .name{font-weight:800; font-size:15px}
+
+    /* 均一トリミング */
+    .thumb{
+      position:relative; width:100%; aspect-ratio:var(--thumb-ratio);
+      background:linear-gradient(135deg,#f2fbff,#e5f7ff); overflow:hidden;
+    }
+    .thumb img{
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center; display:block;
+      -webkit-user-drag:none; user-select:none; image-rendering:auto;
+    }
+
+    .body{padding:12px 14px; display:flex; flex-direction:column; gap:6px}
+    .name{font-weight:800; font-size:14px; line-height:1.3; word-break:break-all}
     .meta{display:flex; gap:8px; align-items:center; color:#3f6b85; font-size:12px}
     .chip{border:1px solid var(--stroke); padding:4px 10px; border-radius:999px; background:linear-gradient(180deg,#fff,#f5fbff)}
 
-    .modal{position:fixed; inset:0; display:none; place-items:center; background:linear-gradient(180deg,rgba(214,241,255,.6),rgba(214,241,255,.25)); backdrop-filter:blur(8px); z-index:4}
+    /* ===== モーダル（横長優先） ===== */
+    .modal{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:linear-gradient(180deg,rgba(214,241,255,.6),rgba(214,241,255,.25));
+      backdrop-filter:blur(8px); z-index:4
+    }
     .modal.active{display:grid}
-    .dialog{width:min(780px,94vw); border:1px solid var(--stroke); background:linear-gradient(180deg,#ffffffee,#f6fbffee);
-      border-radius:28px; box-shadow:var(--shadow); overflow:hidden}
+    .dialog{
+      width:min(780px,94vw); border:1px solid var(--stroke);
+      background:linear-gradient(180deg,#ffffffee,#f6fbffee);
+      border-radius:28px; box-shadow:var(--shadow); overflow:hidden;
+      display:flex; flex-direction:column;
+    }
     .head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--stroke)}
     .head .title{font-weight:900; letter-spacing:.02em}
-    .viewer{height:min(56vh,420px); background:linear-gradient(180deg,#eefaff,#dff6ff); display:grid; place-items:center}
-    .viewer img{max-width:100%; max-height:100%; object-fit:contain; display:block}
-    .info{padding:14px 16px}
+
+    .viewer{
+      position:relative; flex:1 1 auto; display:flex; justify-content:center; align-items:center;
+      background:linear-gradient(180deg,#eefaff,#dff6ff);
+      padding:20px 24px; max-height:60vh; overflow:hidden;
+    }
+    .viewer img{
+      width:100%; height:auto; max-width:100%; max-height:100%;
+      object-fit:contain; object-position:center; display:block;
+      border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,.08);
+      background:#f9fdff;
+    }
+
+    .info{padding:16px 20px; border-top:1px solid var(--stroke)}
+    #modalProduct{font-size:16px; margin-bottom:6px; line-height:1.5; word-break:break-all}
     .actions{display:flex; gap:10px; justify-content:flex-end; padding:14px 16px; border-top:1px solid var(--stroke)}
     .btn-yes{background:linear-gradient(180deg,#eafff4,#d8ffed); border-color:#c7f7e2; color:#055e2b}
     .btn-no{background:linear-gradient(180deg,#fff4f5,#ffe8ec); border-color:#ffd6de; color:#8a1a2e}
 
-    .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:20px;
-      background:linear-gradient(180deg,#ffffff,#eef8ff); border:1px solid var(--stroke);
-      color:#0d1b2a; padding:10px 12px; border-radius:12px; display:none; box-shadow:var(--shadow); z-index:5}
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%); bottom:20px;
+      background:linear-gradient(180deg,#ffffff,#eef8ff);
+      border:1px solid var(--stroke); color:#0d1b2a; padding:10px 12px;
+      border-radius:12px; display:none; box-shadow:var(--shadow); z-index:5
+    }
     .toast.show{display:block}
+
+    /* YESアニメーション */
+    .celebrate{position:fixed; inset:0; pointer-events:none; z-index:6}
+    .celebrate .okring{
+      position:absolute; left:50%; top:40%; width:140px; height:140px;
+      border:4px solid #4ce078; border-radius:999px;
+      transform:translate(-50%,-50%) scale(.6); opacity:0; animation:ringPop .8s ease-out forwards;
+    }
+    @keyframes ringPop{
+      0%{transform:translate(-50%,-50%) scale(.6); opacity:.3}
+      70%{transform:translate(-50%,-50%) scale(1.2); opacity:.15}
+      100%{transform:translate(-50%,-50%) scale(1.45); opacity:0}
+    }
+    .celebrate .ok{
+      position:absolute; left:50%; top:40%;
+      transform:translate(-50%,-50%) scale(.86);
+      background:rgba(255,255,255,.92); border:1px solid var(--stroke); border-radius:16px;
+      padding:10px 14px; display:flex; gap:10px; align-items:center; box-shadow:var(--shadow);
+      animation:okPop .6s ease-out forwards; font-weight:800; color:#0d1b2a;
+    }
+    .celebrate .ok svg{width:24px; height:24px}
+    @keyframes okPop{
+      0%{opacity:0; transform:translate(-50%,-50%) scale(.7)}
+      60%{opacity:1; transform:translate(-50%,-50%) scale(1.04)}
+      100%{opacity:1; transform:translate(-50%,-50%) scale(1)}
+    }
   </style>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
 </head>
@@ -98,7 +161,7 @@
       <div class="brand"><div class="mark"></div><div class="title">THE NORM STORE – Product Selector</div></div>
       <div class="toolbar">
         <a class="btn btn-primary" href="viz.html" target="_blank">📺 可視化を開く</a>
-        <button id="btn-reset" class="btn btn-danger" title="展示後にリセット">このセッションを全消去</button>
+        <button id="btn-reset" class="btn btn-danger" title="展示後にリセット">全消去</button>
       </div>
     </div>
   </header>
@@ -106,19 +169,20 @@
   <main>
     <section class="panel">
       <h2>CATALOG</h2>
-      <p class="hint">製品をタップ → 画像プレビューで確認 → 出荷判断（YES / NO）</p>
+      <p class="hint">製品画像をタップ → プレビューで確認 → 出荷判断（YES / NO）</p>
       <div id="grid" class="grid"></div>
     </section>
   </main>
 
-  <!-- Modal -->
   <div id="modal" class="modal" role="dialog" aria-modal="true">
     <div class="dialog">
-      <div class="head"><div id="modalTitle" class="title">出荷確認</div><button id="btn-close" class="btn">閉じる</button></div>
+      <div class="head">
+        <div id="modalTitle" class="title">出荷確認</div>
+        <button id="btn-close" class="btn">閉じる</button>
+      </div>
       <div class="viewer"><img id="viewerImg" alt=""></div>
       <div class="info">
-        <div id="modalProduct" style="font-size:18px; margin-bottom:6px">「◯◯」を未来社会へ出荷しますか？</div>
-        <div class="meta"><span class="chip" id="modalCat"></span></div>
+        <div id="modalProduct">「◯◯」を未来社会へ出荷しますか？</div>
       </div>
       <div class="actions">
         <button id="answer-no" class="btn btn-no">NO / 保留</button>
@@ -126,138 +190,252 @@
       </div>
     </div>
   </div>
+
   <div id="toast" class="toast">送信しました</div>
 
   <script>
-    // ===== Firebase =====
-    const firebaseConfig = { apiKey:"AIzaSyCDdz7o8PoUdr28-8TZhEk33SP14aWuIzs", authDomain:"thenorm-5caf7.firebaseapp.com", projectId:"thenorm-5caf7" };
+    /* ==== 設定：画像パスの優先順 ==== */
+    const PATH = {
+      THUMB_1: 'img/thumb/',   // 1st choice for grid
+      THUMB_2: 'img/',         // fallback for grid
+      LARGE_1: 'img/large/',   // 1st choice for modal
+      LARGE_2: 'img/',         // fallback for modal
+    };
+
+    /* ==== Firebase（必要に応じて差し替え） ==== */
+    const firebaseConfig = { apiKey: "AIzaSyCDdz7o8PoUdr28-8TZhEk33SP14aWuIzs", authDomain: "thenorm-5caf7.firebaseapp.com", projectId: "thenorm-5caf7" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const votesRef = db.collection('votes');
 
-    // ★★★ viz.html と同じ値にすること ★★★
-    const SESSION_ID = "20251016_shibuya_a";
-
-    // ===== カタログ =====
-    const PRODUCTS = [
-      { id:'p1', name:'都市スナップ p1', cat:'ART', thumb:'img/p1.png', imageUrl:'img/p1.png' },
-      { id:'fashion2', name:'ファッション 02', cat:'FASHION', thumb:'img/fashion_2.png', imageUrl:'img/fashion_2.png' },
-      { id:'imkp_fashion6', name:'ファッション 06', cat:'FASHION', thumb:'img/imkp_Fashion_6.png', imageUrl:'img/imkp_Fashion_6.png' },
-      { id:'imkp_fashion2', name:'ファッション 02 (imkp)', cat:'FASHION', thumb:'img/imkp_Fashion_2.png', imageUrl:'img/imkp_Fashion_2.png' },
-      { id:'imkp_food3', name:'フード 03 (imkp)', cat:'FOOD', thumb:'img/imkp_Food_3.png', imageUrl:'img/imkp_Food_3.png' },
-      { id:'imkp_food2', name:'フード 02 (imkp)', cat:'FOOD', thumb:'img/imkp_Food_2.png', imageUrl:'img/imkp_Food_2.png' },
-      { id:'food1', name:'フード 01', cat:'FOOD', thumb:'img/food_1.png', imageUrl:'img/food_1.png' },
-      { id:'food2', name:'フード 02', cat:'FOOD', thumb:'img/food_2.png', imageUrl:'img/food_2.png' },
-      { id:'imkp_edu3', name:'エデュケーション 03 (imkp)', cat:'EDUCATION', thumb:'img/imkp_Education_3.png', imageUrl:'img/imkp_Education_3.png' },
-      { id:'imkp_edu1', name:'エデュケーション 01 (imkp)', cat:'EDUCATION', thumb:'img/imkp_Education_1.png', imageUrl:'img/imkp_Education_1.png' },
-      { id:'edu1', name:'エデュケーション 01', cat:'EDUCATION', thumb:'img/edu_1.png', imageUrl:'img/edu_1.png' },
-      { id:'edu2', name:'エデュケーション 02', cat:'EDUCATION', thumb:'img/edu_2.png', imageUrl:'img/edu_2.png' },
-      { id:'house1', name:'ハウス 01', cat:'HOME', thumb:'img/house_1.png', imageUrl:'img/house_1.png' },
-      { id:'house', name:'ハウス', cat:'HOME', thumb:'img/house.png', imageUrl:'img/house.png' },
+    /* ==== 画像リスト（★ファイル名をそのまま表示名にします） ==== */
+    // 添付の画像ファイル名に合わせて、この配列の中身（文字列）を必要分だけ列挙してください。
+    // 例: 'imkp_Food_3.png' → カード名/モーダル名ともに「imkp_Food_3.png」で表示されます。
+    const FILES = [
+      'p1.png',
+      'fashion_2.png',
+      'imkp_Fashion_2.png',
+      'imkp_Fashion_6.png',
+      'food_1.png',
+      'food_2.png',
+      'imkp_Food_2.png',
+      'imkp_Food_3.png',
+      'edu_1.png',
+      'edu_2.png',
+      'imkp_Education_1.png',
+      'imkp_Education_3.png',
+      'house.png',
+      'house_1.png',
     ];
 
-    const $grid = document.getElementById('grid');
-    function placeholderSVG(text){
-      const label = (text||'').slice(0,8);
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-        <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-          <stop stop-color="#f2fbff" offset="0"/><stop stop-color="#e5f7ff" offset="1"/></linearGradient></defs>
-        <rect width="100%" height="100%" fill="url(#g)"/>
-        <text x="50%" y="52%" font-family="system-ui,Segoe UI,Roboto,Noto Sans JP,sans-serif" font-size="56" font-weight="700" fill="#0a4a6a" text-anchor="middle">${label}</text>
-      </svg>`;
-      return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    /* ==== 補助：拡張子やベース名 ==== */
+    function stem(file){ return (file||'').replace(/^.*\//,''); }           // パス除去
+    function ext(file){ return (file||'').split('.').pop().toLowerCase(); } // 拡張子
+    function swapExt(file, newExt){ return file.replace(/\.[^.]+$/, '.'+newExt); }
+
+    /* ==== 画像セット：フォールバック順で差し替え ==== */
+    function setImgWithFallback(imgEl, urls){
+      let i = 0;
+      function tryNext(){
+        if(i >= urls.length){ imgEl.src = placeholderSVG('NO IMAGE'); return; }
+        const url = urls[i++];
+        const test = new Image();
+        test.onload = ()=>{ imgEl.src = url; };
+        test.onerror = tryNext;
+        test.src = url;
+      }
+      tryNext();
     }
+
+    /* ==== プレースホルダSVG ==== */
+    function placeholderSVG(text){
+      const label = (text || '').slice(0,16);
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+            <stop stop-color="#f2fbff" offset="0"/><stop stop-color="#e5f7ff" offset="1"/>
+          </linearGradient></defs>
+          <rect width="100%" height="100%" fill="url(#g)"/>
+          <text x="50%" y="52%" font-family="system-ui,Segoe UI,Roboto,Noto Sans JP,sans-serif"
+                font-size="48" font-weight="700" fill="#0a4a6a" text-anchor="middle">${label}</text>
+        </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    /* ==== PRODUCTS をファイル名から生成（表示名＝ファイル名） ==== */
+    const PRODUCTS = FILES.map(file => {
+      const filename = stem(file); // パスを除去して純粋なファイル名
+      return {
+        id: filename,           // IDもファイル名にしておくと整合が取れる
+        file: filename,         // 表示名の元
+        name: filename,         // ★ 表示名＝ファイル名（拡張子込み）
+      };
+    });
+
+    /* ==== グリッド描画 ==== */
+    const $grid = document.getElementById('grid');
     function renderGrid(){
       $grid.innerHTML = PRODUCTS.map(p=>{
-        const thumb = p.thumb || placeholderSVG(p.name);
-        return `<article class="card" data-id="${p.id}">
-          <div class="thumb"><img data-id="${p.id}" data-name="${p.name}" src="${thumb}" alt="${p.name}" loading="lazy"></div>
-          <div class="body"><div class="name">${p.name}</div><div class="meta"><span class="chip">${p.cat}</span></div></div>
-        </article>`;
+        const title = p.name; // ファイル名そのまま
+        return `
+          <article class="card" data-id="${p.id}">
+            <div class="thumb">
+              <img data-id="${p.id}" data-name="${title}" alt="${title}">
+            </div>
+            <div class="body">
+              <div class="name">${title}</div>
+            </div>
+          </article>`;
       }).join('');
+
+      // 画像セット（thumb → fallback）
+      $grid.querySelectorAll('.thumb img').forEach(img=>{
+        const id = img.getAttribute('data-id');
+        const p = PRODUCTS.find(x=>x.id===id);
+        const urls = [
+          PATH.THUMB_1 + p.file,
+          PATH.THUMB_2 + p.file,
+        ];
+        setImgWithFallback(img, urls);
+      });
+
+      // クリックでモーダル
       $grid.querySelectorAll('.card').forEach(el=>{
         el.addEventListener('click', ()=>{
           const id = el.getAttribute('data-id');
           openModal(PRODUCTS.find(x=>x.id===id));
         });
       });
-      $grid.querySelectorAll('img[data-id]').forEach(img=>{
-        img.onerror = ()=>{ img.src = placeholderSVG(img.getAttribute('data-name')||''); };
-      });
     }
 
+    /* ==== モーダル ==== */
     const $modal = document.getElementById('modal');
     const $modalTitle = document.getElementById('modalTitle');
     const $modalProduct = document.getElementById('modalProduct');
-    const $modalCat = document.getElementById('modalCat');
     const $viewerImg = document.getElementById('viewerImg');
 
     function openModal(p){
-      window.__current = p;
-      $modalTitle.textContent = p.name;
-      $modalProduct.textContent = `「${p.name}」を未来社会へ出荷しますか？`;
-      $modalCat.textContent = p.cat;
-      const src = p.imageUrl || p.thumb || placeholderSVG(p.name);
-      $viewerImg.onerror = ()=>{ $viewerImg.src = placeholderSVG(p.name); };
-      $viewerImg.src = src; $viewerImg.alt = p.name;
+      const title = p.name; // ファイル名そのまま
+      $modalTitle.textContent = '出荷確認';
+      $modalProduct.textContent = `「${title}」を未来社会へ出荷しますか？`;
+
+      // largeは .png を優先（拡張子違いの可能性にも一応対応）
+      const tryLargeSame = PATH.LARGE_1 + p.file;
+      const tryLargePng  = PATH.LARGE_1 + swapExt(p.file,'png');
+      const tryImgSame   = PATH.LARGE_2 + p.file;
+      const tryThumbSame = PATH.THUMB_2 + p.file;
+
+      setImgWithFallback($viewerImg, [tryLargeSame, tryLargePng, tryImgSame, tryThumbSame, placeholderSVG(title)]);
+
       $modal.classList.add('active');
+      window.__current = p;
     }
     function closeModal(){ $modal.classList.remove('active'); window.__current=null; }
     document.getElementById('btn-close').addEventListener('click', closeModal);
-    $modal.addEventListener('click', e=>{ if(e.target===$modal) closeModal(); });
+    $modal.addEventListener('click', e=>{ if(e.target === $modal) closeModal(); });
 
+    /* ==== YES演出 ==== */
+    function celebrateYes(){
+      const layer = document.createElement('div');
+      layer.className = 'celebrate';
+      layer.innerHTML = `
+        <div class="okring"></div>
+        <div class="ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+          YES を記録しました
+        </div>`;
+      document.body.appendChild(layer);
+      setTimeout(()=> layer.remove(), 900);
+    }
+
+    /* ==== 投票＆リセット ==== */
     document.getElementById('answer-yes').addEventListener('click', ()=> handle('yes'));
     document.getElementById('answer-no').addEventListener('click', ()=> handle('no'));
+
     async function handle(answer){
       if(!window.__current) return;
       try{
         await votesRef.add({
           productId: window.__current.id,
-          productName: window.__current.name, // 予備：可視化側でも使えます
-          answer, session: SESSION_ID,
+          fileName: window.__current.file, // どの画像かが明確
+          answer,
           ts: firebase.firestore.FieldValue.serverTimestamp()
         });
+        if (answer === 'yes') celebrateYes();
         toast('送信しました');
-      }catch(e){ toast('送信エラー: '+ e.message); }
+      }catch(e){
+        toast('送信エラー: '+ e.message);
+      }
       closeModal();
     }
 
-    // このセッションだけ全削除
     document.getElementById('btn-reset').addEventListener('click', async ()=>{
-      if(!confirm('このセッションの votes を全削除します。よろしいですか？')) return;
-      const snap = await votesRef.where('session','==',SESSION_ID).get();
-      const batch = db.batch(); snap.forEach(doc=> batch.delete(doc.ref));
-      await batch.commit(); toast('削除しました');
+      if(!confirm('votes を全削除します。よろしいですか？')) return;
+      const snap = await votesRef.get(); const batch = db.batch();
+      snap.forEach(doc=> batch.delete(doc.ref)); await batch.commit();
+      toast('削除しました');
     });
 
+    /* ==== トースト ==== */
     function toast(msg){
       const t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
       setTimeout(()=>t.classList.remove('show'),1200);
     }
 
-    // 背景スパークル
+    /* ==== 背景スパークル ==== */
     (function sparkle(){
-      const c = document.getElementById('bgSparkle'); if(!c) return;
+      const c = document.getElementById('bgSparkle');
+      if(!c) return;
       const ctx = c.getContext('2d', { alpha: true });
-      let w,h,dpr=Math.min(2, window.devicePixelRatio||1);
-      const N = 90, ps = [];
-      function resize(){ w=c.clientWidth; h=c.clientHeight; c.width=w*dpr; c.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0) }
-      new ResizeObserver(resize).observe(document.body); resize();
-      for(let i=0;i<N;i++) ps.push({x:Math.random()*w,y:Math.random()*h,r:.8+Math.random()*1.6,a:.35+Math.random()*.25,vx:(-0.2+Math.random()*.9),vy:(-0.2+Math.random()*.9)});
-      (function tick(){
+      let w, h, dpr = Math.min(2, window.devicePixelRatio || 1);
+      const N = 100;
+      const ps = [];
+
+      function resize(){
+        w = c.clientWidth; h = c.clientHeight;
+        c.width = Math.floor(w * dpr);
+        c.height = Math.floor(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      new ResizeObserver(resize).observe(document.body);
+      resize();
+
+      function init(){
+        ps.length = 0;
+        for(let i=0;i<N;i++){
+          ps.push({ x: Math.random()*w, y: Math.random()*h, r: 0.8 + Math.random()*1.6, a: 0.35 + Math.random()*0.25,
+                    vx: (-0.2 + Math.random()*0.9), vy: (-0.2 + Math.random()*0.9) });
+        }
+      }
+      init();
+
+      function tick(){
         ctx.clearRect(0,0,w,h);
-        const grd=ctx.createRadialGradient(w*0.7,h*0.2,0,w*0.7,h*0.2,Math.max(w,h)*0.8);
-        grd.addColorStop(0,'rgba(255,255,255,0.08)'); grd.addColorStop(1,'rgba(255,255,255,0)'); ctx.fillStyle=grd; ctx.fillRect(0,0,w,h);
+        const grd = ctx.createRadialGradient(w*0.7,h*0.2,0, w*0.7,h*0.2, Math.max(w,h)*0.8);
+        grd.addColorStop(0,'rgba(255,255,255,0.08)');
+        grd.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle = grd; ctx.fillRect(0,0,w,h);
+
         for(const p of ps){
-          p.x+=p.vx; p.y+=p.vy; if(p.x<-10)p.x=w+10; if(p.x>w+10)p.x=-10; if(p.y<-10)p.y=h+10; if(p.y>h+10)p.y=-10;
-          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(0,163,255,${p.a})`; ctx.fill();
-          p.a += (Math.random()-0.5)*0.02; p.a=Math.max(0.10,Math.min(0.8,p.a));
+          p.x += p.vx; p.y += p.vy;
+          if(p.x<-10) p.x=w+10; if(p.x>w+10) p.x=-10;
+          if(p.y<-10) p.y=h+10; if(p.y>h+10) p.y=-10;
+
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fillStyle = `rgba(0,163,255,${p.a})`; ctx.fill();
+
+          p.a += (Math.random()-0.5)*0.02;
+          p.a = Math.max(0.10, Math.min(0.8, p.a));
         }
         requestAnimationFrame(tick);
-      })();
+      }
+      tick();
     })();
 
+    // 起動
     renderGrid();
   </script>
 </body>
