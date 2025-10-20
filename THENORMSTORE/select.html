@@ -338,6 +338,11 @@
     ...exts.map(x => PATH.THUMB_1 + x),  // ← これが抜けていた
     ...exts.map(x => PATH.THUMB_2 + x),
   ];
+ }
+
+  setImgWithFallback($viewerImg, candidates);
+  $modal.classList.add('active');
+  window.__current = p;
 
   function setImgWithFallback(imgEl, urls){
   // ローディング中に仮プレースホルダを先に出してチラつき回避
