@@ -172,7 +172,7 @@ header{background:linear-gradient(180deg,rgba(10,20,36,.78),rgba(10,20,36,.38));
 
     /* ===== 粒子 ===== */
     const pCanvas=document.getElementById('particles'); const pCtx=pCanvas.getContext('2d');
-    const PARAM={IDLE_SPAWN_PER_SEC:6,IDLE_BASE_SPEED:1.25,IDLE_MAX:300,DRIZZLE_EVERY_SEC:10,DRIZZLE_COUNT:10,FUTURE_PULSE_STRENGTH:.16,YES_BASE_R:6,YES_BURST_R_MIN:8,YES_BURST_R_MAX:15,YES_FLASH_MS:550,TRAIL_LENGTH:20,TRAIL_FADE:.19};
+    const PARAM={IDLE_SPAWN_PER_SEC:6,IDLE_BASE_SPEED:1.25,IDLE_MAX:300,DRIZZLE_EVERY_SEC:10,DRIZZLE_COUNT:10,FUTURE_PULSE_STRENGTH:.9,YES_BASE_R:10,YES_BURST_R_MIN:8,YES_BURST_R_MAX:25,YES_FLASH_MS:550,TRAIL_LENGTH:40,TRAIL_FADE:.30};
     let particles=[],idleParticles=[],lastIdleSpawn=0,lastDrizzle=0;
     function spawnYesParticles(n){const h=pCanvas.height;for(let i=0;i<n;i++)particles.push({x:-20,y:40+Math.random()*(h-80),vx:2+Math.random()*3,vy:(Math.random()-.5)*1,life:220+Math.random()*100,r:PARAM.YES_BASE_R,col:'rgba(53,201,135,0.95)',burst:false,born:performance.now(),trail:[]})}
     function spawnYesBurst(k){const h=pCanvas.height;for(let i=0;i<k;i++)particles.push({x:-30,y:40+Math.random()*(h-80),vx:2.4+Math.random()*3.2,vy:(Math.random()-.5)*1.2,life:260+Math.random()*120,r:PARAM.YES_BURST_R_MIN+Math.random()*(PARAM.YES_BURST_R_MAX-PARAM.YES_BURST_R_MIN),col:'rgba(255,255,255,1)',burst:true,born:performance.now(),trail:[]})}
