@@ -6,17 +6,35 @@
   <title>Future Line | Visualization Console (Aero)</title>
   <style>
     :root{
-      --bg1:#0d1b2a;--bg2:#10243a;--bg3:#1a324d;
-      --glass:#ffffff1a;--stroke:#2a3e55;--ink:#e7f2ff;--muted:#aac6de;
-      --ok:#35c987;--no:#ff5a7a;--future:#00a3ff;
-      --shadow:0 10px 30px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.2);--hdrH:64px
+       --bg1:#07111c;--bg2:#0a1a2b;--bg3:#10243a;       /* 背景をさらに暗く */
+       --glass:#ffffff14;                                /* 透過ガラスを少しだけ明るく */
+       --stroke:#6aa9ff66;                               /* 枠線は青味のある薄い光沢 */
+       --ink:#f2f7ff;                                    /* 文字はほぼ白 */
+       --muted:#c9dcf3;                                  /* サブ文字は淡い水色 */
+       --ok:#5df0a8;--no:#ff6b8d;--future:#3ab8ff;       /* 線と粒の色も発光感をUP */
+       --shadow:0 14px 34px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.25);
+       --hdrH:64px;
     }
     *{box-sizing:border-box} html,body{height:100%}
     body{
       margin:0;color:var(--ink);
-      background:radial-gradient(1200px 700px at 80% -10%,#0b172a 0%,transparent 60%),radial-gradient(1800px 900px at -10% 10%,var(--bg2) 0%,transparent 55%),linear-gradient(180deg,var(--bg1),var(--bg3));
-      background-size:auto,auto,100% 100%;animation:skyShift 18s ease-in-out infinite;
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden
+      background:
+    radial-gradient(1200px 700px at 80% -10%,#061221 0%,transparent 60%),
+    radial-gradient(1800px 900px at -10% 10%,var(--bg2) 0%,transparent 55%),
+    linear-gradient(180deg,var(--bg1),var(--bg3));
+  animation: skyShift 18s ease-in-out infinite;
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden;
+}
+
+header{background:linear-gradient(180deg,rgba(10,20,36,.78),rgba(10,20,36,.38));border-bottom:1px solid var(--stroke)}
+.panel{background:linear-gradient(180deg,rgba(8,16,28,.92),rgba(8,16,28,.82));border:1px solid var(--stroke)}
+.panel h2{color:#e2f0ff}
+.chart-box{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.06));border:1px solid var(--stroke)}
+.box{background:linear-gradient(180deg,#0e2036,#0c1a2c);border:1px solid var(--stroke)}
+.label{color:var(--muted)}
+.bin{background:linear-gradient(180deg,#0e2136,#0c1a2c);color:#d6ecff;border:1px solid var(--stroke)}
+.badge{background:linear-gradient(180deg,#0e2136,#0c1a2c);color:#d6ecff;border:1px solid var(--stroke)}
     }
     @keyframes skyShift{0%{background-position:0 0,0 0,0 0}50%{background-position:0 -3%,-2% 2%,0 0}100%{background-position:0 0,0 0,0 0}}
     .bubbles{position:fixed;inset:0;pointer-events:none;z-index:1}
