@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Future Line | Visualization Console (Aero)</title>
+  <title>Future Line | リアルタイム出荷状況 (Aero)</title>
   <style>
     :root{
        --bg1:#07111c;--bg2:#0a1a2b;--bg3:#10243a;       /* 背景をさらに暗く */
@@ -84,10 +84,10 @@ header{background:linear-gradient(180deg,rgba(10,20,36,.78),rgba(10,20,36,.38));
 
   <main id="main">
     <section class="panel" id="flowPanel">
-      <h2>FLOW / YES PARTICLE FEED → FUTURE</h2>
+      <h2>未来出荷ライン：未来接続フィード</h2>
       <div class="chart-box" id="flowChartBox">
         <canvas id="particles"></canvas>
-        <div class="bin">FUTURE</div>
+        <div class="bin">未来への入り口</div>
       </div>
       <div class="legend"><span class="dot yes"></span> YES <span class="dot no" style="margin-left:12px"></span> NO</div>
       <div class="stat">
@@ -98,11 +98,11 @@ header{background:linear-gradient(180deg,rgba(10,20,36,.78),rgba(10,20,36,.38));
     </section>
 
     <section class="panel">
-      <h2>SANKEY / PRODUCT → YES / NO → FUTURE</h2>
+      <h2>〈選択の流路〉— プロダクトがたどる未来線</h2>
       <div class="chart-box" style="height:360px; position:relative">
         <svg id="sankey" width="100%" height="360" role="img" aria-label="Sankey Diagram"></svg>
       </div>
-      <h2 style="margin:10px 0 8px">TIMELINE / PER MINUTE</h2>
+      <h2 style="margin:10px 0 8px">YES/NO反応記録 — FUTURE TIMING MONITOR</h2>
       <div class="chart-box" style="height:220px; position:relative">
         <svg id="timeline" width="100%" height="220" role="img" aria-label="Timeline"></svg>
       </div>
