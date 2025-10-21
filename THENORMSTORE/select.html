@@ -6,19 +6,19 @@
   <title>THE NORM STORE – Product Selector</title>
   <style>
     :root{
-      --thumb-ratio: 4/3; /* サムネ比率：正方形にしたい場合は 1/1 */
-      --bg1:#eaf6ff; --bg2:#cfefff; --bg3:#bfe7ff;
-      --glass:#ffffffcc; --stroke:#e1f0f8; --ink:#0d1b2a; --muted:#4f6b83;
-      --shadow: 0 10px 30px rgba(13,27,42,.12), 0 2px 8px rgba(13,27,42,.06);
+      --thumb-ratio: 4/3;
+      --bg1:#0d1b2a; --bg2:#10243a; --bg3:#1a324d;
+      --glass:#ffffffcc; --stroke:#2a3e55; --ink:#e7f2ff; --muted:#aac6de;
+      --shadow: 0 10px 30px rgba(0,0,0,.25), 0 2px 8px rgba(0,0,0,.2);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; color:var(--ink);
       background:
-        radial-gradient(1200px 700px at 80% -10%, #ffffff 0%, transparent 60%),
-        radial-gradient(1800px 900px at -10% 10%, var(--bg1) 0%, transparent 55%),
-        linear-gradient(180deg, var(--bg2), var(--bg3));
+        radial-gradient(1200px 700px at 80% -10%, #0b172a 0%, transparent 60%),
+        radial-gradient(1800px 900px at -10% 10%, var(--bg2) 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg3));
       animation: skyShift 18s ease-in-out infinite;
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans JP",sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
@@ -26,19 +26,19 @@
     @keyframes skyShift { 0%{background-position:0 0,0 0,0 0} 50%{background-position:0 -7%,-5% 4%,0 0} 100%{background-position:0 0,0 0,0 0} }
 
     .bubbles{position:fixed; inset:0; pointer-events:none; z-index:1}
-    .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#fff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
-    .b1{width:180px; height:180px; left:6%; top:14%; filter:blur(2px); opacity:.55}
-    .b2{width:260px; height:260px; right:8%; top:8%; opacity:.45}
-    .b3{width:120px; height:120px; left:18%; bottom:10%; opacity:.5}
-    @keyframes float1 { 0%{transform:translateY(0) rotate(0);opacity:.45} 50%{transform:translateY(-38px) rotate(10deg);opacity:.75} 100%{transform:translateY(0) rotate(0);opacity:.45} }
-    @keyframes float2 { 0%{transform:translate(0,0) rotate(0);opacity:.55} 50%{transform:translate(16px,-42px) rotate(-12deg);opacity:.9} 100%{transform:translate(0,0) rotate(0);opacity:.55} }
+    .bubbles i{position:absolute; border-radius:999px; background:linear-gradient(180deg,#cfe7ff,rgba(255,255,255,.6)); box-shadow:0 10px 30px rgba(0,163,255,.18)}
+    .b1{width:180px; height:180px; left:6%; top:14%; filter:blur(2px); opacity:.4}
+    .b2{width:260px; height:260px; right:8%; top:8%; opacity:.35}
+    .b3{width:120px; height:120px; left:18%; bottom:10%; opacity:.38}
+    @keyframes float1 { 0%{transform:translateY(0) rotate(0);opacity:.35} 50%{transform:translateY(-38px) rotate(10deg);opacity:.7} 100%{transform:translateY(0) rotate(0);opacity:.35} }
+    @keyframes float2 { 0%{transform:translate(0,0) rotate(0);opacity:.45} 50%{transform:translate(16px,-42px) rotate(-12deg);opacity:.8} 100%{transform:translate(0,0) rotate(0);opacity:.45} }
     .bubbles i{animation:float1 6s ease-in-out infinite; will-change:transform,opacity}
     .bubbles .b2{animation:float2 8s ease-in-out infinite}
     .bubbles .b3{animation:float1 7s ease-in-out -2s infinite}
 
     header{
       position:sticky; top:0; z-index:3; backdrop-filter:saturate(1.4) blur(8px);
-      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35));
+      background:linear-gradient(180deg,rgba(22,34,52,.7),rgba(22,34,52,.35));
       border-bottom:1px solid var(--stroke);
     }
     .hdr{display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px 16px}
@@ -46,86 +46,76 @@
     .brand .mark{width:34px; height:34px; border-radius:12px; background:linear-gradient(135deg,#00d1ff,#00a3ff); box-shadow:var(--shadow)}
     .brand .title{font-weight:800; letter-spacing:.02em}
     .toolbar{display:flex; gap:8px}
-    .btn{border:1px solid var(--stroke); background:linear-gradient(180deg,#fff,#f6fbff); color:var(--ink);
+    .btn{border:1px solid var(--stroke); background:linear-gradient(180deg,#1c2a3b,#233549); color:#e7f2ff;
       padding:10px 14px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow)}
     .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:linear-gradient(180deg,#e6f8ff,#c9f0ff); border-color:#bde9ff}
-    .btn-danger{background:linear-gradient(180deg,#fff0f3,#ffe2e8); border-color:#ffd0da; color:#a3142e}
+    .btn-primary{background:linear-gradient(180deg,#0e2e44,#134766); border-color:#2a5a7a}
+    .btn-danger{background:linear-gradient(180deg,#3a1220,#52182a); border-color:#6a1f38; color:#ffd8e1}
 
     main{padding:18px; position:relative; z-index:2}
-    .panel{position:relative; background:var(--glass); border:1px solid var(--stroke); border-radius:24px; padding:16px; box-shadow:var(--shadow)}
-    .panel h2{margin:0 0 10px; font-size:14px; letter-spacing:.08em; color:#194057}
+    .panel{position:relative; background:linear-gradient(180deg,rgba(20,30,46,.8),rgba(20,30,46,.65)); border:1px solid var(--stroke); border-radius:24px; padding:16px; box-shadow:var(--shadow)}
+    .panel h2{margin:0 0 10px; font-size:14px; letter-spacing:.08em; color:#bde0ff}
     .hint{color:var(--muted); margin:-2px 0 12px}
 
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px}
     .card{
       display:flex; flex-direction:column;
       border:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
+      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
       border-radius:20px; overflow:hidden; cursor:pointer; transition:.2s transform,.2s box-shadow;
       min-height:240px;
     }
     .card:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
 
-    /* 均一トリミング */
-    .thumb{
-      position:relative; width:100%; aspect-ratio:var(--thumb-ratio);
-      background:linear-gradient(135deg,#f2fbff,#e5f7ff); overflow:hidden;
-    }
-    .thumb img{
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover; object-position:center; display:block;
-      -webkit-user-drag:none; user-select:none; image-rendering:auto;
-    }
+    .thumb{position:relative; width:100%; aspect-ratio:var(--thumb-ratio); background:linear-gradient(135deg,#102c45,#0f2236); overflow:hidden}
+    .thumb img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block; -webkit-user-drag:none; user-select:none; image-rendering:auto}
 
     .body{padding:12px 14px; display:flex; flex-direction:column; gap:6px}
     .name{font-weight:800; font-size:14px; line-height:1.3; word-break:break-all}
-    .meta{display:flex; gap:8px; align-items:center; color:#3f6b85; font-size:12px}
-    .chip{border:1px solid var(--stroke); padding:4px 10px; border-radius:999px; background:linear-gradient(180deg,#fff,#f5fbff)}
+    .meta{display:flex; gap:8px; align-items:center; color:#a9c9e4; font-size:12px}
+    .chip{border:1px solid var(--stroke); padding:4px 10px; border-radius:999px; background:linear-gradient(180deg,#142033,#102136)}
 
-    /* ===== モーダル（横長優先） ===== */
     .modal{
       position:fixed; inset:0; display:none; place-items:center;
-      background:linear-gradient(180deg,rgba(214,241,255,.6),rgba(214,241,255,.25));
+      background:linear-gradient(180deg,rgba(9,18,30,.6),rgba(9,18,30,.25));
       backdrop-filter:blur(8px); z-index:4
     }
     .modal.active{display:grid}
     .dialog{
       width:min(780px,94vw); border:1px solid var(--stroke);
-      background:linear-gradient(180deg,#ffffffee,#f6fbffee);
+      background:linear-gradient(180deg,#0f2034ee,#0c1a2cee);
       border-radius:28px; box-shadow:var(--shadow); overflow:hidden;
-      display:flex; flex-direction:column;
+      display:flex; flex-direction:column; color:#e7f2ff;
     }
     .head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--stroke)}
     .head .title{font-weight:900; letter-spacing:.02em}
 
     .viewer{
       position:relative; flex:1 1 auto; display:flex; justify-content:center; align-items:center;
-      background:linear-gradient(180deg,#eefaff,#dff6ff);
+      background:linear-gradient(180deg,#0d2136,#0b1a2b);
       padding:20px 24px; max-height:60vh; overflow:hidden;
     }
     .viewer img{
       width:100%; height:auto; max-width:100%; max-height:100%;
       object-fit:contain; object-position:center; display:block;
-      border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,.08);
-      background:#f9fdff;
+      border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,.35);
+      background:#0a1a29;
     }
 
     .info{padding:16px 20px; border-top:1px solid var(--stroke)}
     #modalProduct{font-size:16px; margin-bottom:6px; line-height:1.5; word-break:break-all}
     .actions{display:flex; gap:10px; justify-content:flex-end; padding:14px 16px; border-top:1px solid var(--stroke)}
-    .btn-yes{background:linear-gradient(180deg,#eafff4,#d8ffed); border-color:#c7f7e2; color:#055e2b}
-    .btn-no{background:linear-gradient(180deg,#fff4f5,#ffe8ec); border-color:#ffd6de; color:#8a1a2e}
+    .btn-yes{background:linear-gradient(180deg,#0f3a2a,#135b41); border-color:#1f7c5a; color:#d6ffe9}
+    .btn-no{background:linear-gradient(180deg,#3a1520,#5a1d2c); border-color:#7a2a3c; color:#ffd6de}
 
     .toast{
       position:fixed; left:50%; transform:translateX(-50%); bottom:20px;
-      background:linear-gradient(180deg,#ffffff,#eef8ff);
-      border:1px solid var(--stroke); color:#0d1b2a; padding:10px 12px;
+      background:linear-gradient(180deg,#0e2136,#0c1a2c);
+      border:1px solid var(--stroke); color:#e7f2ff; padding:10px 12px;
       border-radius:12px; display:none; box-shadow:var(--shadow); z-index:5
     }
     .toast.show{display:block}
 
-    /* YESアニメーション */
     .celebrate{position:fixed; inset:0; pointer-events:none; z-index:6}
     .celebrate .okring{
       position:absolute; left:50%; top:40%; width:140px; height:140px;
@@ -140,9 +130,9 @@
     .celebrate .ok{
       position:absolute; left:50%; top:40%;
       transform:translate(-50%,-50%) scale(.86);
-      background:rgba(255,255,255,.92); border:1px solid var(--stroke); border-radius:16px;
+      background:rgba(10,26,41,.92); border:1px solid var(--stroke); border-radius:16px;
       padding:10px 14px; display:flex; gap:10px; align-items:center; box-shadow:var(--shadow);
-      animation:okPop .6s ease-out forwards; font-weight:800; color:#0d1b2a;
+      animation:okPop .6s ease-out forwards; font-weight:800; color:#dffaf9;
     }
     .celebrate .ok svg{width:24px; height:24px}
     @keyframes okPop{
@@ -163,8 +153,8 @@
     <div class="hdr">
       <div class="brand"><div class="mark"></div><div class="title">THE NORM STORE – Product Selector</div></div>
       <div class="toolbar">
-        <a class="btn btn-primary" href="viz.html" target="_blank">📺 可視化を開く</a>
-        <button id="btn-reset" class="btn btn-danger" title="展示後にリセット">全消去</button>
+        <a class="btn btn-primary" id="open-viz" href="viz.html" target="_blank">📺 可視化を開く</a>
+        <button id="btn-reset" class="btn btn-danger" title="現在のセッションだけ削除">このセッションを全消去</button>
       </div>
     </div>
   </header>
@@ -197,15 +187,24 @@
   <div id="toast" class="toast">送信しました</div>
 
   <script>
+    /* ==== 共有セッションID（URL指定可） ==== */
+    const DEFAULT_SESSION_ID = "20251016_shibuya_a";
+    const urlSession = new URL(location.href).searchParams.get('session');
+    const SESSION_ID = (urlSession && urlSession.trim()) || DEFAULT_SESSION_ID;
+
+    // 「可視化を開く」リンクにもセッションを受け渡し
+    const vizLink = document.getElementById('open-viz');
+    if (vizLink) vizLink.href = `viz.html?session=${encodeURIComponent(SESSION_ID)}`;
+
     /* ==== 設定：画像パスの優先順 ==== */
     const PATH = {
-      THUMB_1: 'img/thumb/',   // 1st choice for grid
-      THUMB_2: 'img/',         // fallback for grid
-      LARGE_1: 'img/large/',   // 1st choice for modal
-      LARGE_2: 'img/',         // fallback for modal
+      THUMB_1: 'img/thumb/',
+      THUMB_2: 'img/',
+      LARGE_1: 'img/large/',
+      LARGE_2: 'img/',
     };
 
-    /* ==== Firebase（必要に応じて差し替え） ==== */
+    /* ==== Firebase ==== */
     const firebaseConfig = { apiKey: "AIzaSyCDdz7o8PoUdr28-8TZhEk33SP14aWuIzs", authDomain: "thenorm-5caf7.firebaseapp.com", projectId: "thenorm-5caf7" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -229,26 +228,23 @@
       'house_1.png',
     ];
 
-    /* ==== ユーティリティ ==== */
-    function stem(file){ return (file||'').replace(/^.*\//,''); }           // パス除去
+    function stem(file){ return (file||'').replace(/^.*\//,''); }
     function placeholderSVG(text){
       const label = (text || '').slice(0,16);
       const svg = `
         <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
           <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-            <stop stop-color="#f2fbff" offset="0"/><stop stop-color="#e5f7ff" offset="1"/>
+            <stop stop-color="#102c45" offset="0"/><stop stop-color="#0f2236" offset="1"/>
           </linearGradient></defs>
           <rect width="100%" height="100%" fill="url(#g)"/>
           <text x="50%" y="52%" font-family="system-ui,Segoe UI,Roboto,Noto Sans JP,sans-serif"
-                font-size="48" font-weight="700" fill="#0a4a6a" text-anchor="middle">${label}</text>
+                font-size="48" font-weight="700" fill="#cde7ff" text-anchor="middle">${label}</text>
         </svg>`;
       return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }
 
-    /* ==== 画像セット（フォールバック） ==== */
     function setImgWithFallback(imgEl, urls){
-      // ローディング中の仮プレースホルダでチラつきを抑える
-      imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="30"><rect width="100%" height="100%" fill="#eef5ff"/></svg>');
+      imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="30"><rect width="100%" height="100%" fill="#0e2338"/></svg>');
       let i = 0;
       function tryNext(){
         if(i >= urls.length){ imgEl.src = placeholderSVG('NO IMAGE'); return; }
@@ -261,13 +257,11 @@
       tryNext();
     }
 
-    /* ==== PRODUCTS をファイル名から生成（表示名＝ファイル名） ==== */
     const PRODUCTS = FILES.map(file => {
       const filename = stem(file);
       return { id: filename, file: filename, name: filename };
     });
 
-    /* ==== グリッド描画 ==== */
     const $grid = document.getElementById('grid');
     function renderGrid(){
       $grid.innerHTML = PRODUCTS.map(p=>{
@@ -283,7 +277,6 @@
           </article>`;
       }).join('');
 
-      // 画像セット（thumb → fallback）
       $grid.querySelectorAll('.thumb img').forEach(img=>{
         const id = img.getAttribute('data-id');
         const p = PRODUCTS.find(x=>x.id===id);
@@ -291,7 +284,6 @@
         setImgWithFallback(img, urls);
       });
 
-      // クリックでモーダル
       $grid.querySelectorAll('.card').forEach(el=>{
         el.addEventListener('click', ()=>{
           const id = el.getAttribute('data-id');
@@ -300,18 +292,16 @@
       });
     }
 
-    /* ==== モーダル ==== */
     const $modal = document.getElementById('modal');
     const $modalTitle = document.getElementById('modalTitle');
     const $modalProduct = document.getElementById('modalProduct');
     const $viewerImg = document.getElementById('viewerImg');
 
     function openModal(p){
-      const title = p.name; // ファイル名そのまま
+      const title = p.name;
       $modalTitle.textContent = '出荷確認';
       $modalProduct.textContent = `「${title}」を未来社会へ出荷しますか？`;
 
-      // 拡張子バリエーション（大小文字ゆれもケア）
       const exts = [
         p.file,
         p.file.replace(/\.[^.]+$/, '.png'),
@@ -322,7 +312,6 @@
         p.file.replace(/\.[^.]+$/, '.JPEG'),
       ];
 
-      // フォールバック順：large → img/ → thumb/
       const candidates = [
         ...exts.map(x => PATH.LARGE_1 + x),
         ...exts.map(x => PATH.LARGE_2 + x),
@@ -339,7 +328,6 @@
     document.getElementById('btn-close').addEventListener('click', closeModal);
     $modal.addEventListener('click', e=>{ if(e.target === $modal) closeModal(); });
 
-    /* ==== YES演出 ==== */
     function celebrateYes(){
       const layer = document.createElement('div');
       layer.className = 'celebrate';
@@ -355,7 +343,6 @@
       setTimeout(()=> layer.remove(), 900);
     }
 
-    /* ==== 投票＆リセット ==== */
     document.getElementById('answer-yes').addEventListener('click', ()=> handle('yes'));
     document.getElementById('answer-no').addEventListener('click', ()=> handle('no'));
 
@@ -366,6 +353,7 @@
           productId: window.__current.id,
           fileName: window.__current.file,
           answer,
+          session: SESSION_ID, // ★ viz と同じセッションで書き込む
           ts: firebase.firestore.FieldValue.serverTimestamp()
         });
         if (answer === 'yes') celebrateYes();
@@ -376,24 +364,24 @@
       closeModal();
     }
 
+    // 現在のセッションのみ削除
     document.getElementById('btn-reset').addEventListener('click', async ()=>{
-      if(!confirm('votes を全削除します。よろしいですか？')) return;
-      const snap = await votesRef.get(); const batch = db.batch();
-      snap.forEach(doc=> batch.delete(doc.ref)); await batch.commit();
+      if(!confirm(`session="${SESSION_ID}" の votes を全削除します。よろしいですか？`)) return;
+      const snap = await votesRef.where('session','==',SESSION_ID).get();
+      const batch = db.batch();
+      snap.forEach(doc=> batch.delete(doc.ref));
+      await batch.commit();
       toast('削除しました');
     });
 
-    /* ==== トースト ==== */
     function toast(msg){
       const t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
       setTimeout(()=>t.classList.remove('show'),1200);
     }
 
-    /* ==== 背景スパークル ==== */
     (function sparkle(){
-      const c = document.getElementById('bgSparkle');
-      if(!c) return;
+      const c = document.getElementById('bgSparkle'); if(!c) return;
       const ctx = c.getContext('2d', { alpha: true });
       let w, h, dpr = Math.min(2, window.devicePixelRatio || 1);
       const N = 100;
@@ -411,7 +399,7 @@
       function init(){
         ps.length = 0;
         for(let i=0;i<N;i++){
-          ps.push({ x: Math.random()*w, y: Math.random()*h, r: 0.8 + Math.random()*1.6, a: 0.35 + Math.random()*0.25,
+          ps.push({ x: Math.random()*w, y: Math.random()*h, r: 0.8 + Math.random()*1.6, a: 0.25 + Math.random()*0.25,
                     vx: (-0.2 + Math.random()*0.9), vy: (-0.2 + Math.random()*0.9) });
         }
       }
@@ -420,7 +408,7 @@
       function tick(){
         ctx.clearRect(0,0,w,h);
         const grd = ctx.createRadialGradient(w*0.7,h*0.2,0, w*0.7,h*0.2, Math.max(w,h)*0.8);
-        grd.addColorStop(0,'rgba(255,255,255,0.08)');
+        grd.addColorStop(0,'rgba(255,255,255,0.06)');
         grd.addColorStop(1,'rgba(255,255,255,0)');
         ctx.fillStyle = grd; ctx.fillRect(0,0,w,h);
 
@@ -433,14 +421,13 @@
           ctx.fillStyle = `rgba(0,163,255,${p.a})`; ctx.fill();
 
           p.a += (Math.random()-0.5)*0.02;
-          p.a = Math.max(0.10, Math.min(0.8, p.a));
+          p.a = Math.max(0.08, Math.min(0.6, p.a));
         }
         requestAnimationFrame(tick);
       }
       tick();
     })();
 
-    // 起動
     renderGrid();
   </script>
 </body>
